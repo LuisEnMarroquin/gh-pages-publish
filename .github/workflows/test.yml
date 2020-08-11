@@ -16,7 +16,7 @@ jobs:
       run: ls && pwd
     # Run my action
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v1.0
+      uses: LuisEnMarroquin/gh-pages-publish@v1.1
       id: hello
       with:
         SSHKEY: ${{ secrets.SSH }}
