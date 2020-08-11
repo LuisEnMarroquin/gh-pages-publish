@@ -4,13 +4,21 @@ This action prints "Hello World" or "Hello" + the name of a person to greet to t
 
 ## Inputs
 
-### `who-to-greet`
+### `BRANCH`
 
-**Required** The name of the person to greet. Default `"World"`.
+**Optional** The branch where your compiled files will be moved. Default `gh-pages`.
+
+### `FOLDER`
+
+**Required** The folder where your compiled files are.
+
+### `SSHKEY`
+
+**Required** Your GitHub SSH access key.
 
 ## Outputs
 
-### `time`
+### `TIME`
 
 The time we greeted you.
 
@@ -19,7 +27,9 @@ The time we greeted you.
 ```yml
 uses: LuisEnMarroquin/gh-pages-publish@v1.0
 with:
-  who-to-greet: 'Mona the Octocat'
+  BRANCH: gh-pages
+  FOLDER: dist
+  SSHKEY: ${{ secrets.SSH }}
 ```
 
 ## Publish action

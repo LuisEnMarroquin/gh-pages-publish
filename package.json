@@ -1,28 +1,24 @@
 {
   "name": "publish-gh-pages",
   "version": "1.0.0",
-  "description": "",
+  "description": "Publish to GitHub pages using your SSH key",
   "main": "index.js",
+  "license": "MIT",
+  "author": "LuisEnMarroquin <luis@marroquin.dev>",
   "scripts": {
     "build": "ncc build index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LuisEnMarroquin/publish-gh-pages.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/LuisEnMarroquin/publish-gh-pages/issues"
-  },
-  "homepage": "https://github.com/LuisEnMarroquin/publish-gh-pages#readme",
   "dependencies": {
     "@actions/core": "^1.2.4",
     "@actions/github": "^4.0.0"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.22.3"
+  },
+  "standard": {
+    "ignore": [
+      "dist/*.js"
+    ]
   }
 }

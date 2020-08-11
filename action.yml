@@ -1,12 +1,18 @@
 name: 'GitHub Pages Publish'
-description: 'Publish to GitHub pages using only a SSH key'
+description: 'Publish to GitHub pages using your SSH key'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  BRANCH:
+    description: 'Branch to move'
+    required: false
+    default: 'gh-pages'
+  FOLDER:
+    description: 'Folder to move'
     required: true
-    default: 'World'
+  SSHKEY:
+    description: 'Your SSH key'
+    required: true
 outputs:
-  time: # id of output
+  TIME:
     description: 'The time we greeted you'
 runs:
   using: 'node12'

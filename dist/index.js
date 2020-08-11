@@ -163,20 +163,24 @@ module.exports = require("os");
 /***/ 104:
 /***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
-const core = __webpack_require__(470);
-const github = __webpack_require__(469);
+const core = __webpack_require__(470)
+const github = __webpack_require__(469)
 
 try {
-  // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput('who-to-greet');
-  console.log(`Hello ${nameToGreet}!`);
-  const time = (new Date()).toTimeString();
-  core.setOutput("time", time);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
+  const BRANCH = core.getInput('BRANCH')
+  const FOLDER = core.getInput('FOLDER')
+  const SSHKEY = core.getInput('SSHKEY')
+
+  console.log(`H1 ${BRANCH}!`)
+  console.log(`H2 ${FOLDER}!`)
+  console.log(`H3 ${SSHKEY}!`)
+
+  const time = (new Date()).toTimeString()
+  core.setOutput('TIME', time)
+  const payload = JSON.stringify(github.context.payload, undefined, 2) // Get the JSON webhook payload for the event that triggered the workflow
+  console.log(`The event payload: ${payload}`)
 } catch (error) {
-  core.setFailed(error.message);
+  core.setFailed(error.message)
 }
 
 
