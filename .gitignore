@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# File managers
+.DS_Store
+.directory
+desktop.ini
+
+# Test files
+/nothing.*

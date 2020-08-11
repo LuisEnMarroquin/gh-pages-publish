@@ -1,0 +1,24 @@
+name: Testing
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get the repository
+      uses: actions/checkout@v2
+    # Run my action
+    - name: Deploy to gh-pages
+      uses: LuisEnMarroquin/gh-pages-publish@v1.0
+      id: hello
+      with:
+        who-to-greet: 'Mona the Octocat'
+        BRANCH: gh-pages
+        FOLDER: dist
+    # Use the output from the `hello` step
+    - name: Get the output time
+      run: echo "The time was ${{ steps.hello.outputs.time }}"
