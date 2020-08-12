@@ -18,14 +18,14 @@ This action prints "Hello World" or "Hello" + the name of a person to greet to t
 
 ## Outputs
 
-### `TIME`
+### `TIMING`
 
 The time we greeted you.
 
 ## Example usage
 
 ```yml
-uses: LuisEnMarroquin/gh-pages-publish@v1.1
+uses: LuisEnMarroquin/gh-pages-publish@v1.2
 with:
   BRANCH: gh-pages
   FOLDER: dist
@@ -34,6 +34,8 @@ with:
 
 ## Publish action
 
+Remember to change the version number first for all files
+
 ```shell
 # Update your dist/index.js
 npm run build
@@ -41,13 +43,13 @@ npm run build
 # Add all files
 git add .
 
-# Commit them
+# Commit the files
 git commit -m "Use zeit/ncc"
 
 # Tag your release
-git tag -a -m "My first action release" v1.1
+git tag -a -m "My first action release" v1.2
 
-# Push your tags
+# Push commit and tags
 git push --follow-tags
 ```
 

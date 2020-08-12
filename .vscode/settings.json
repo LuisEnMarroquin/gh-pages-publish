@@ -5,13 +5,13 @@
   "editor.detectIndentation": false,
   "files.trimTrailingWhitespace": true,
   "search.exclude": {
-    "dist/*": true,
-    "**/package-lock.json": true
+    "dist/index.js": true
   },
   "files.exclude": {
     "**/.DS_Store": true,
     "**/.directory": true,
     "**/desktop.ini": true,
-    "**/node_modules/": true
+    "**/node_modules/": true,
+    "**/package-lock.json": true
   }
 }

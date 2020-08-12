@@ -1,13 +1,13 @@
 {
   "name": "publish-gh-pages",
   "version": "1.0.0",
-  "description": "Publish to GitHub pages using your SSH key",
+  "description": "Publish to GitHub Pages using your SSH key",
   "main": "index.js",
   "license": "MIT",
   "author": "LuisEnMarroquin <luis@marroquin.dev>",
   "scripts": {
-    "build": "ncc build index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node clean.js && node index.js dev",
+    "build": "ncc build index.js"
   },
   "dependencies": {
     "@actions/core": "^1.2.4",

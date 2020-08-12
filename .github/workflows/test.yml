@@ -16,15 +16,17 @@ jobs:
       run: ls && pwd
     # Run my action
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v1.1
+      uses: LuisEnMarroquin/gh-pages-publish@v1.2
       id: hello
       with:
-        SSHKEY: ${{ secrets.SSH }}
         BRANCH: gh-pages
         FOLDER: dist
+        SSHKEY: ${{ secrets.SSH }}
     # Use the output from the `hello` step
     - name: Get the output time
-      run: echo "The time was ${{ steps.hello.outputs.TIME }}"
+      run: echo "The time was ${{ steps.hello.outputs.TIMING }}"
     # Show whats on home folder
     - name: Home folder
-      run: cd $HOME && ls && ls -a
+      run: cd $HOME && ls && ls -a && ls -R
+    - name: Git is logged in
+      run: ssh -T git@github.com

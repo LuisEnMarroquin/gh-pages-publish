@@ -8,3 +8,8 @@ desktop.ini
 
 # Test files
 /nothing.*
+
+# SSH folder
+.ssh/
+config
+.gitconfig

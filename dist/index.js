@@ -163,22 +163,46 @@ module.exports = require("os");
 /***/ 104:
 /***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
+const { join } = __webpack_require__(622)
+const { homedir } = __webpack_require__(87)
 const core = __webpack_require__(470)
 const github = __webpack_require__(469)
+const { execSync } = __webpack_require__(129)
+const { existsSync, mkdirSync, writeFileSync } = __webpack_require__(747)
 
 try {
-  const BRANCH = core.getInput('BRANCH')
-  const FOLDER = core.getInput('FOLDER')
-  const SSHKEY = core.getInput('SSHKEY')
+  let BASEPATH = homedir()
+  let BRANCH = core.getInput('BRANCH')
+  let FOLDER = core.getInput('FOLDER')
+  let SSHKEY = core.getInput('SSHKEY')
 
-  console.log(`H1 ${BRANCH}!`)
-  console.log(`H2 ${FOLDER}!`)
-  console.log(`H3 ${SSHKEY}!`)
+  if (process.argv[2] === 'dev') {
+    BASEPATH = __dirname
+    BRANCH = 'gh-pages'
+    FOLDER = 'dist'
+    SSHKEY = 'my-ssh-key'
+  }
+
+  const sshFolder = __webpack_require__.ab + ".ssh" // SSH folder location
+  if (!existsSync(__webpack_require__.ab + ".ssh")) mkdirSync(__webpack_require__.ab + ".ssh") // Create SSH folder if doesn't exists
+
+  const sshConfig = __webpack_require__.ab + "config" // SSH config file location
+  if (!existsSync(__webpack_require__.ab + "config")) writeFileSync(__webpack_require__.ab + "config", 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n')
+
+  const gitconfigFile = __webpack_require__.ab + ".gitconfig" // Git config file location
+  if (!existsSync(__webpack_require__.ab + ".gitconfig")) writeFileSync(__webpack_require__.ab + ".gitconfig", '[user]\n  name = LuisEnMarroquin\n  email = mluis651@gmail.com\n')
+
+  let branchName = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8' }) // Get branch name from git
+  console.log({ branchName })
+  branchName = branchName.replace('\r\n', '') // Windows
+  branchName = branchName.replace('\n', '') // Unix
+  console.log({ branchName })
 
   const time = (new Date()).toTimeString()
-  core.setOutput('TIME', time)
+  core.setOutput('TIMING', time)
+
   const payload = JSON.stringify(github.context.payload, undefined, 2) // Get the JSON webhook payload for the event that triggered the workflow
-  console.log(`The event payload: ${payload}`)
+  console.log(`The event payload is: ${payload}`)
 } catch (error) {
   core.setFailed(error.message)
 }
@@ -233,6 +257,13 @@ function getApiBaseUrl() {
 }
 exports.getApiBaseUrl = getApiBaseUrl;
 //# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 129:
+/***/ (function(module) {
+
+module.exports = require("child_process");
 
 /***/ }),
 
