@@ -9,6 +9,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+    - name: Get initial path
+      run: pwd
     - name: Get the repository
       uses: actions/checkout@v2
     # Get system information
@@ -27,6 +29,6 @@ jobs:
       run: echo "The time was ${{ steps.hello.outputs.TIMING }}"
     # Show whats on home folder
     - name: Home folder
-      run: cd $HOME && ls && ls -a && ls -R
+      run: cat .gitconfig && cd ~/.ssh && ls
     - name: Git is logged in
       run: ssh -T git@github.com

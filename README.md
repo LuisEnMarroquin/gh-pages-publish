@@ -1,6 +1,6 @@
-# Hello world javascript action
+# GitHub Pages publish javascript action
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
+This action sends your build folder to a new/existing branch.
 
 ## Inputs
 

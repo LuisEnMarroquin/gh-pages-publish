@@ -12,4 +12,5 @@ desktop.ini
 # SSH folder
 .ssh/
 config
+github
 .gitconfig
