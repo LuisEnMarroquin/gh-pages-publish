@@ -18,7 +18,7 @@ jobs:
       run: ls && pwd
     # Run my action
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v1.2
+      uses: LuisEnMarroquin/gh-pages-publish@v1.3
       id: hello
       with:
         BRANCH: gh-pages
