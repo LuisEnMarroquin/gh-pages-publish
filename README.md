@@ -25,7 +25,7 @@ The time we greeted you.
 ## Example usage
 
 ```yml
-uses: LuisEnMarroquin/gh-pages-publish@v1.5
+uses: LuisEnMarroquin/gh-pages-publish@v1.6
 with:
   BRANCH: gh-pages
   FOLDER: dist
@@ -37,20 +37,11 @@ with:
 Remember to change the version number first for all files
 
 ```shell
-# Update your dist/index.js
-npm run build
-
-# Add all files
-git add .
-
-# Commit the files
-git commit -m "Use zeit/ncc"
-
-# Tag your release
-git tag -a -m "My first action release" v1.5
-
-# Push commit and tags
-git push --follow-tags
+npm run build # Update your dist/index.js
+git add . # Add all files
+git commit -m "Use zeit/ncc" # Commit the files
+git tag -a -m "My first action release" v1.6 # Tag your release
+git push --follow-tags # Push commit and tags
 ```
 
 ## References
