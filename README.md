@@ -5,11 +5,17 @@
 
 This action sends your build folder to a new/existing branch.
 
+Note: Only works for macOS and Linux hosts.
+
 ## Inputs
 
 ### `BRANCH`
 
 **Optional** The branch where your compiled files will be moved. Default `gh-pages`.
+
+### `DELETE`
+
+**Optional** Should delete the commit history. Default `false`.
 
 ### `FOLDER`
 
@@ -23,13 +29,13 @@ This action sends your build folder to a new/existing branch.
 
 ### `TIMING`
 
-The time we greeted you.
+The time when this action finished execution.
 
 ## Example usage
 
 ```yml
 - name: Deploy to gh-pages
-  uses: LuisEnMarroquin/gh-pages-publish@v1.9-omega-3
+  uses: LuisEnMarroquin/gh-pages-publish@v1.9-omega-4
   with:
     BRANCH: gh-pages
     FOLDER: dist
@@ -44,7 +50,7 @@ Remember to change the version number first for all files
 npm run build # Update your dist/index.js
 git add . # Add all files
 git commit -m "Use zeit/ncc" # Commit the files
-git tag -a -m "My first action release" v1.9-omega-3 # Tag your release
+git tag -a -m "My first action release" v1.9-omega-4 # Tag your release
 git push --follow-tags # Push commit and tags
 ```
 

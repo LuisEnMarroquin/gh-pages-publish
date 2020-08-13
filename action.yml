@@ -6,6 +6,10 @@ inputs:
     description: 'Branch to move'
     default: 'gh-pages'
     required: false
+  DELETE:
+    description: 'Delete commit history'
+    default: false
+    required: false
   FOLDER:
     description: 'Folder to move'
     required: true
@@ -14,7 +18,7 @@ inputs:
     required: true
 outputs:
   TIMING:
-    description: 'The time we greeted you'
+    description: 'The time action ended execution'
 runs:
   using: 'node12'
   main: 'dist/index.js'

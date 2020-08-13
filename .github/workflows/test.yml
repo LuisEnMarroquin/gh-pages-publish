@@ -12,7 +12,7 @@ jobs:
     - name: Get the repository
       uses: actions/checkout@v2
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v1.9-omega-3
+      uses: LuisEnMarroquin/gh-pages-publish@v1.9-omega-4
       id: hello
       with:
         BRANCH: gh-pages
@@ -24,8 +24,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v1.9-omega-3
+    - uses: LuisEnMarroquin/gh-pages-publish@v1.9-omega-4
       with:
         BRANCH: gh-pages-mac
+        DELETE: true
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
