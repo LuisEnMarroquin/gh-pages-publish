@@ -228,10 +228,18 @@ try {
   exec(`git config --global user.email "${userMail}"`)
 
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
-    if (DELETE) { // Removes local and remote branch
+    if (DELETE === true) { // Removes local and remote branch
       console.log('Deleting branch')
-      console.log(21, exec(`git branch -d ${BRANCH} || true`))
-      console.log(22, exec(`git push --delete origin ${BRANCH} || true`))
+      try {
+        console.log(21, exec(`git branch -d ${BRANCH}`))
+      } catch (error) {
+        console.error({ error })
+      }
+      try {
+        console.log(22, exec(`git push --delete origin ${BRANCH}`))
+      } catch (error) {
+        console.error({ error })
+      }
     }
     exec(`git stash`) // Remove any change to build folder
     let pd = `publishFolder-${branchHead}` // File where compilled files will be moved

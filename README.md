@@ -1,13 +1,13 @@
-# GitHub Pages publish javascript action
+# GitHub Pages Publish JavaScript Action
 
 ![Standard](https://img.shields.io/badge/code_style-standard-brightgreen.svg)
 ![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/Testing/badge.svg)
 
 This action sends your build folder to a new/existing branch.
 
-Note 1: This action only works for mac and Linux hosts.
+Note 1: This action only works for Linux and macOS hosts.
 
-Note 2: Please use versions > 2.0
+Note 2: Please any version > 2.0 of this action, previous versions are pre-release and won't work
 
 ## Inputs
 
@@ -37,7 +37,7 @@ The time when this action finished execution.
 
 ```yml
 - name: Deploy to gh-pages
-  uses: LuisEnMarroquin/gh-pages-publish@v2.0
+  uses: LuisEnMarroquin/gh-pages-publish@v2.0-alpha
   with:
     BRANCH: gh-pages
     FOLDER: dist
@@ -52,7 +52,7 @@ Remember to change the version number first for all files
 npm run build # Update your dist/index.js
 git add . # Add all files
 git commit -m "Use zeit/ncc" # Commit the files
-git tag -a -m "My first action release" v2.0 # Tag your release
+git tag -a -m "My first action release" v2.0-alpha # Tag your release
 git push --follow-tags # Push commit and tags
 ```
 

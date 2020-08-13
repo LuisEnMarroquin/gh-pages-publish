@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "author": "LuisEnMarroquin <luis@marroquin.dev>",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "scripts": {
     "start": "node clean.js && node index.js dev",
     "build": "ncc build index.js"
