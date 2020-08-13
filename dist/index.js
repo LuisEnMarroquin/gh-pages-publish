@@ -238,7 +238,7 @@ try {
     console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} status`))
     console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} add .`))
     console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} commit -m "${commitMessage}"`))
-    console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} push`))
+    console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} push --set-upstream origin ${BRANCH}`))
   }
 
   const time = (new Date()).toTimeString()
