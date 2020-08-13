@@ -61,8 +61,13 @@ try {
 
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
     exec(`git stash`) // Remove any change to build folder
-    if (!branchExists(BRANCH)) exec(`git checkout -b ${BRANCH}`) // Create branch if doesn't exist
-    else exec(`git checkout --orphan ${BRANCH}`) // Change to existing branch if exists
+    if (!branchExists(BRANCH)) {
+      console.log('Creating new branch')
+      exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
+    } else {
+      exec(`git checkout ${BRANCH}`) // Change to existing branch if exists
+      exec(`git pull`) // Pull changes from remote
+    }
     let pd = `publishFolder-${branchHead}` // File where compilled files will be moved
     mkdirSync(`../${pd}`) // Create publish folder
     console.log(exec(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`)) // Compressing build folder
