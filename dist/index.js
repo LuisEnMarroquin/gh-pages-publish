@@ -221,6 +221,9 @@ try {
     console.log(`The event payload is: ${payloadString}`)
   }
 
+  exec(`git config --global user.name "${userName}"`)
+  exec(`git config --global user.email "${userMail}"`)
+
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
     exec(`git stash`) // Remove any change to build folder
     if (!branchExists(BRANCH)) exec(`git checkout -b ${BRANCH}`) // Create branch if doesn't exist
@@ -237,9 +240,6 @@ try {
     console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} commit -m "${commitMessage}"`))
     console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} push`))
   }
-
-  const gitConFile = __webpack_require__.ab + ".gitconfig" // Git config file location
-  if (!existsSync(__webpack_require__.ab + ".gitconfig")) writeFileSync(__webpack_require__.ab + ".gitconfig", `[user]\n  name = ${userName}\n  email = ${userMail}\n`)
 
   const time = (new Date()).toTimeString()
   core.setOutput('TIMING', time)
