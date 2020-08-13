@@ -11,7 +11,6 @@ jobs:
     steps:
     - name: Get the repository
       uses: actions/checkout@v2
-
     - name: Deploy to gh-pages
       uses: LuisEnMarroquin/gh-pages-publish@v1.9
       id: hello
@@ -19,9 +18,25 @@ jobs:
         BRANCH: gh-pages
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
-
     - name: Use the output from the `hello` step
       run: echo "The time was ${{ steps.hello.outputs.TIMING }}"
 
-    - name: Git is logged in
-      run: ssh -T git@github.com
+  win:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: LuisEnMarroquin/gh-pages-publish@v1.9
+      with:
+        BRANCH: gh-pages-win
+        FOLDER: dist
+        SSHKEY: ${{ secrets.SSH }}
+
+  mac:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: LuisEnMarroquin/gh-pages-publish@v1.9
+      with:
+        BRANCH: gh-pages-mac
+        FOLDER: dist
+        SSHKEY: ${{ secrets.SSH }}

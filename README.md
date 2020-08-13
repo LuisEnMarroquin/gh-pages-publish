@@ -1,5 +1,8 @@
 # GitHub Pages publish javascript action
 
+![Standard](https://img.shields.io/badge/code_style-standard-brightgreen.svg)
+![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/Testing/badge.svg)
+
 This action sends your build folder to a new/existing branch.
 
 ## Inputs
@@ -25,11 +28,12 @@ The time we greeted you.
 ## Example usage
 
 ```yml
-uses: LuisEnMarroquin/gh-pages-publish@v1.9
-with:
-  BRANCH: gh-pages
-  FOLDER: dist
-  SSHKEY: ${{ secrets.SSH }}
+- name: Deploy to gh-pages
+  uses: LuisEnMarroquin/gh-pages-publish@v1.9
+  with:
+    BRANCH: gh-pages
+    FOLDER: dist
+    SSHKEY: ${{ secrets.SSH }}
 ```
 
 ## Publish action
