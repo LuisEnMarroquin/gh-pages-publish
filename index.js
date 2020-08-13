@@ -62,19 +62,19 @@ try {
 
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
     exec(`git stash`) // Remove any change to build folder
+    let pd = `publishFolder-${branchHead}` // File where compilled files will be moved
+    mkdirSync(`../${pd}`) // Create publish folder
+    console.log(exec(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`)) // Compressing build folder
+    console.log(exec(`tar xvzf ../pubFolder.tar.gz -C ../${pd}/`)) // Uncompress build folder
     if (!branchExists(BRANCH)) {
       console.log('Creating new branch')
       exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
     } else {
-      console.log(exec(`git pull`)) // Pull branch from remote
+      console.log(exec(`git fetch origin ${BRANCH}`)) // Pull branch from remote
       console.log(exec(`git checkout ${BRANCH}`)) // Change to existing branch if exists
       console.log(exec(`git pull`)) // Pull branch from remote
     }
-    let pd = `publishFolder-${branchHead}` // File where compilled files will be moved
-    mkdirSync(`../${pd}`) // Create publish folder
-    console.log(exec(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`)) // Compressing build folder
     console.log(exec(`tar -czvf ../gitFolder.tar.gz .git/`)) // Compressing .git folder
-    console.log(exec(`tar xvzf ../pubFolder.tar.gz -C ../${pd}/`)) // Uncompress build folder
     console.log(exec(`tar xvzf ../gitFolder.tar.gz -C ../${pd}/`)) // Uncompress .git folder
     console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} rm -r --cached . -f`)) // Untracking previous files
     console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} status`))
