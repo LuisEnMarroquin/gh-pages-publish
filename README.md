@@ -25,7 +25,7 @@ The time we greeted you.
 ## Example usage
 
 ```yml
-uses: LuisEnMarroquin/gh-pages-publish@v1.4
+uses: LuisEnMarroquin/gh-pages-publish@v1.5
 with:
   BRANCH: gh-pages
   FOLDER: dist
@@ -47,7 +47,7 @@ git add .
 git commit -m "Use zeit/ncc"
 
 # Tag your release
-git tag -a -m "My first action release" v1.4
+git tag -a -m "My first action release" v1.5
 
 # Push commit and tags
 git push --follow-tags

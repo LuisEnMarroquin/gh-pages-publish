@@ -63,6 +63,7 @@ try {
     let dirVar = `publishFolder-${branchHead}` // File where compilled files will be moved
     let publishFolder = join(__dirname, '..', `${dirVar}`) // Publish folder full path
     if (!existsSync(publishFolder)) mkdirSync(publishFolder) // Create publish folder
+    console.log(exec(`cd .. && ls && pwd`))
     console.log(exec(`tar -czvf ../gitFolder.tar.gz .git/`)) // Compressing .git/ folder
     console.log(exec(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`)) // Compressing folder to publish
     console.log(exec(`tar xvzf ../gitFolder.tar.gz -C ../${dirVar}/`)) // Uncompress .git/ folder

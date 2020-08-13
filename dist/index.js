@@ -171,6 +171,8 @@ const { execSync } = __webpack_require__(129)
 const { existsSync, mkdirSync, writeFileSync } = __webpack_require__(747)
 
 try {
+  let exec = (command) => execSync(command, { encoding: 'utf-8' })
+
   let removeLineBreaks = (text) => {
     text = text.replace('\r\n', '') // Windows
     text = text.replace('\n', '') // Unix
@@ -178,7 +180,7 @@ try {
   }
 
   let branchExists = (branch) => {
-    let remoteExists = removeLineBreaks(execSync(`git ls-remote --heads origin ${branch}`, { encoding: 'utf-8' }))
+    let remoteExists = removeLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
     return (remoteExists.length > 0)
   }
 
@@ -203,11 +205,10 @@ try {
   const sshGithub = __webpack_require__.ab + "github" // SSH github file location
   if (!existsSync(__webpack_require__.ab + "github")) writeFileSync(__webpack_require__.ab + "github", SSHKEY)
 
-  let branchName = removeLineBreaks(execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8' })) // Get branch name from git
-  let branchHead = removeLineBreaks(execSync('git show --format="%h" --no-patch', { encoding: 'utf-8' })) // Get branch name from git
+  let branchName = removeLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
+  let branchHead = removeLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
 
   const commitMessage = `Deploy to ${BRANCH} from ${branchName} @ ${branchHead} 🚀`
-
   const payload = github.context.payload
   let userName = 'LuisEnMarroquin'
   let userMail = 'mluis651@gmail.com'
@@ -221,21 +222,22 @@ try {
   }
 
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
-    execSync(`git stash`, { encoding: 'utf-8' }) // Remove any change to build folder
-    if (!branchExists(BRANCH)) execSync(`git checkout -b ${BRANCH}`, { encoding: 'utf-8' }) // Create branch if doesn't exist
-    else execSync(`git checkout --orphan ${BRANCH}`, { encoding: 'utf-8' }) // Change to existing branch if exists
+    exec(`git stash`) // Remove any change to build folder
+    if (!branchExists(BRANCH)) exec(`git checkout -b ${BRANCH}`) // Create branch if doesn't exist
+    else exec(`git checkout --orphan ${BRANCH}`) // Change to existing branch if exists
     let dirVar = `publishFolder-${branchHead}` // File where compilled files will be moved
     let publishFolder = join(__dirname, '..', `${dirVar}`) // Publish folder full path
     if (!existsSync(publishFolder)) mkdirSync(publishFolder) // Create publish folder
-    execSync(`tar -czvf ../gitFolder.tar.gz .git/`, { encoding: 'utf-8' }) // Compressing .git/ folder
-    execSync(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`, { encoding: 'utf-8' }) // Compressing folder to publish
-    execSync(`tar xvzf ../gitFolder.tar.gz -C ../${dirVar}/`, { encoding: 'utf-8' }) // Uncompress .git/ folder
-    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} rm -r --cached . -f`) // Untracking previous files
-    execSync(`tar xvzf ../pubFolder.tar.gz -C ../${dirVar}/`, { encoding: 'utf-8' }) // Uncompress folder to publish
-    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} status`)
-    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} add .`)
-    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} commit -m "${commitMessage}"`)
-    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} push`)
+    console.log(exec(`cd .. && ls && pwd`))
+    console.log(exec(`tar -czvf ../gitFolder.tar.gz .git/`)) // Compressing .git/ folder
+    console.log(exec(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`)) // Compressing folder to publish
+    console.log(exec(`tar xvzf ../gitFolder.tar.gz -C ../${dirVar}/`)) // Uncompress .git/ folder
+    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} rm -r --cached . -f`)) // Untracking previous files
+    console.log(exec(`tar xvzf ../pubFolder.tar.gz -C ../${dirVar}/`)) // Uncompress folder to publish
+    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} status`))
+    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} add .`))
+    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} commit -m "${commitMessage}"`))
+    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} push`))
   }
 
   const gitConFile = __webpack_require__.ab + ".gitconfig" // Git config file location

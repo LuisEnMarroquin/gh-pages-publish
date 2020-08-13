@@ -12,11 +12,8 @@ jobs:
     - name: Get the repository
       uses: actions/checkout@v2
 
-    - name: Get initial path
-      run: ls -a
-
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v1.4
+      uses: LuisEnMarroquin/gh-pages-publish@v1.5
       id: hello
       with:
         BRANCH: gh-pages
