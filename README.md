@@ -29,7 +29,7 @@ The time we greeted you.
 
 ```yml
 - name: Deploy to gh-pages
-  uses: LuisEnMarroquin/gh-pages-publish@v1.9-alpha
+  uses: LuisEnMarroquin/gh-pages-publish@v1.9-beta
   with:
     BRANCH: gh-pages
     FOLDER: dist
@@ -44,7 +44,7 @@ Remember to change the version number first for all files
 npm run build # Update your dist/index.js
 git add . # Add all files
 git commit -m "Use zeit/ncc" # Commit the files
-git tag -a -m "My first action release" v1.9-alpha # Tag your release
+git tag -a -m "My first action release" v1.9-beta # Tag your release
 git push --follow-tags # Push commit and tags
 ```
 
