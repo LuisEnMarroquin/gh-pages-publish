@@ -9,26 +9,26 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Get initial path
-      run: pwd
+
+    - name: Get initial information
+      run: pwd && ls
+
     - name: Get the repository
       uses: actions/checkout@v2
-    # Get system information
-    - name: Information
-      run: ls && pwd
-    # Run my action
+
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v1.3
+      uses: LuisEnMarroquin/gh-pages-publish@v1.4
       id: hello
       with:
         BRANCH: gh-pages
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
-    # Use the output from the `hello` step
-    - name: Get the output time
+
+    - name: Use the output from the `hello` step
       run: echo "The time was ${{ steps.hello.outputs.TIMING }}"
-    # Show whats on home folder
-    - name: Home folder
-      run: cat .gitconfig && cd ~/.ssh && ls
+
+    - name: Show whats on home folder
+      run: cat ~/.gitconfig && cd ~/.ssh && ls -a
+
     - name: Git is logged in
       run: ssh -T git@github.com

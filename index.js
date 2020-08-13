@@ -14,7 +14,7 @@ try {
 
   let branchExists = (branch) => {
     let remoteExists = removeLineBreaks(execSync(`git ls-remote --heads origin ${branch}`, { encoding: 'utf-8' }))
-    return (remoteExists.length > 0 ? true : false)
+    return (remoteExists.length > 0)
   }
 
   let BASEPATH = homedir()
@@ -55,16 +55,22 @@ try {
     console.log(`The event payload is: ${payloadString}`)
   }
 
-  let exist1 = branchExists(BRANCH)
-  console.log(exist1)
-  let exist2 = branchExists('master')
-  console.log(exist2)
-
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
-    // TODO: Copy files
-    console.log('production')
     execSync(`git stash`, { encoding: 'utf-8' }) // Remove any change to build folder
     if (!branchExists(BRANCH)) execSync(`git checkout -b ${BRANCH}`, { encoding: 'utf-8' }) // Create branch if doesn't exist
+    else execSync(`git checkout --orphan ${BRANCH}`, { encoding: 'utf-8' }) // Change to existing branch if exists
+    let dirVar = `publishFolder-${branchHead}` // File where compilled files will be moved
+    let publishFolder = join(__dirname, '..', `${dirVar}`) // Publish folder full path
+    if (!existsSync(publishFolder)) mkdirSync(publishFolder) // Create publish folder
+    execSync(`tar -czvf ../gitFolder.tar.gz .git/`, { encoding: 'utf-8' }) // Compressing .git/ folder
+    execSync(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`, { encoding: 'utf-8' }) // Compressing folder to publish
+    execSync(`tar xvzf ../gitFolder.tar.gz -C ../${dirVar}/`, { encoding: 'utf-8' }) // Uncompress .git/ folder
+    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} rm -r --cached . -f`) // Untracking previous files
+    execSync(`tar xvzf ../pubFolder.tar.gz -C ../${dirVar}/`, { encoding: 'utf-8' }) // Uncompress folder to publish
+    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} status`)
+    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} add .`)
+    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} commit -m "${commitMessage}"`)
+    execSync(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} push`)
   }
 
   const gitConFile = join(BASEPATH, '.gitconfig') // Git config file location
