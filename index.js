@@ -65,8 +65,8 @@ try {
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
     if (DELETE) { // Removes local and remote branch
       console.log('Deleting branch')
-      exec(-2, `git branch -d ${BRANCH} || true`)
-      exec(-1, `git push --delete origin ${BRANCH} || true`)
+      console.log(21, exec(`git branch -d ${BRANCH} || true`))
+      console.log(22, exec(`git push --delete origin ${BRANCH} || true`))
     }
     exec(`git stash`) // Remove any change to build folder
     let pd = `publishFolder-${branchHead}` // File where compilled files will be moved
