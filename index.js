@@ -66,8 +66,9 @@ try {
       console.log('Creating new branch')
       exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
     } else {
-      console.log(exec(`git fetch origin ${BRANCH}`)) // Pull branch from remote
+      console.log(exec(`git pull`)) // Pull branch from remote
       console.log(exec(`git checkout ${BRANCH}`)) // Change to existing branch if exists
+      console.log(exec(`git pull`)) // Pull branch from remote
     }
     let pd = `publishFolder-${branchHead}` // File where compilled files will be moved
     mkdirSync(`../${pd}`) // Create publish folder
