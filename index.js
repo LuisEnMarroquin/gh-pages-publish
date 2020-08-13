@@ -1,21 +1,21 @@
 const { join } = require('path')
 const { homedir } = require('os')
 const core = require('@actions/core')
-const github = require('@actions/github')
 const { execSync } = require('child_process')
+const { context } = require('@actions/github')
 const { existsSync, mkdirSync, writeFileSync } = require('fs')
 
 try {
   let exec = (command) => execSync(command, { encoding: 'utf-8' })
 
-  let removeLineBreaks = (text) => {
+  let rmLineBreaks = (text) => {
     text = text.replace('\r\n', '') // Windows
     text = text.replace('\n', '') // Unix
     return text
   }
 
   let branchExists = (branch) => {
-    let remoteExists = removeLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
+    let remoteExists = rmLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
     return (remoteExists.length > 0)
   }
 
@@ -40,11 +40,11 @@ try {
   const sshGithub = join(BASEPATH, '.ssh', 'github') // SSH github file location
   if (!existsSync(sshGithub)) writeFileSync(sshGithub, SSHKEY)
 
-  let branchName = removeLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
-  let branchHead = removeLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
+  let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
+  let branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
 
   const commitMessage = `Deploy to ${BRANCH} from ${branchName} @ ${branchHead} 🚀`
-  const payload = github.context.payload
+  const payload = context.payload
   let userName = 'LuisEnMarroquin'
   let userMail = 'mluis651@gmail.com'
   try {
@@ -60,19 +60,17 @@ try {
     exec(`git stash`) // Remove any change to build folder
     if (!branchExists(BRANCH)) exec(`git checkout -b ${BRANCH}`) // Create branch if doesn't exist
     else exec(`git checkout --orphan ${BRANCH}`) // Change to existing branch if exists
-    let dirVar = `publishFolder-${branchHead}` // File where compilled files will be moved
-    let publishFolder = join(__dirname, '..', `${dirVar}`) // Publish folder full path
-    mkdirSync(publishFolder) // Create publish folder
-    console.log(exec(`cd .. && ls && pwd`))
-    console.log(exec(`tar -czvf ../gitFolder.tar.gz .git/`)) // Compressing .git/ folder
-    console.log(exec(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`)) // Compressing folder to publish
-    console.log(exec(`tar xvzf ../gitFolder.tar.gz -C ../${dirVar}/`)) // Uncompress .git/ folder
-    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} rm -r --cached . -f`)) // Untracking previous files
-    console.log(exec(`tar xvzf ../pubFolder.tar.gz -C ../${dirVar}/`)) // Uncompress folder to publish
-    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} status`))
-    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} add .`))
-    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} commit -m "${commitMessage}"`))
-    console.log(exec(`git --git-dir=../${dirVar}/.git --work-tree=../${dirVar} push`))
+    let pd = `publishFolder-${branchHead}` // File where compilled files will be moved
+    mkdirSync(`../${pd}`) // Create publish folder
+    console.log(exec(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`)) // Compressing build folder
+    console.log(exec(`tar -czvf ../gitFolder.tar.gz .git/`)) // Compressing .git folder
+    console.log(exec(`tar xvzf ../pubFolder.tar.gz -C ../${pd}/`)) // Uncompress build folder
+    console.log(exec(`tar xvzf ../gitFolder.tar.gz -C ../${pd}/`)) // Uncompress .git folder
+    console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} rm -r --cached . -f`)) // Untracking previous files
+    console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} status`))
+    console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} add .`))
+    console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} commit -m "${commitMessage}"`))
+    console.log(exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} push`))
   }
 
   const gitConFile = join(BASEPATH, '.gitconfig') // Git config file location
