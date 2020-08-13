@@ -232,7 +232,6 @@ try {
   exec(`git config --global user.email "${userMail}"`)
 
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
-    console.log(99, typeof DELETE)
     if (DELETE === true || DELETE === 'true') { // Removes local and remote branch
       console.log('Deleting branch')
       try {

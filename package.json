@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "Publish to GitHub Pages using your SSH key",
   "main": "index.js",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "author": "LuisEnMarroquin <luis@marroquin.dev>",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "scripts": {
     "start": "node clean.js && node index.js dev",
     "build": "ncc build index.js"

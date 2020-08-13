@@ -17,3 +17,7 @@ github
 
 # Compressed
 *.gz
+
+# Other package managers
+yarn.lock
+npm-shrinkwrap.json
