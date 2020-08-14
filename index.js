@@ -45,11 +45,13 @@ try {
   exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
 
   const sshGithub = join('~', '.ssh', 'github') // SSH key file location
-  exec(`(echo ${SSHKEY}) > ${sshGithub}`, false)
+  exec(`${SSHKEY} > ${sshGithub}`, false)
 
   const sshConfig = join('~', '.ssh', 'config') // SSH config file location
   let configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
-  exec(`(echo ${configText}) > ${sshConfig}`)
+  exec(`${configText} > ${sshConfig}`)
+
+  exec(`wc -l ${sshGithub} ${sshConfig}`)
 
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
   let branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
