@@ -55,13 +55,13 @@ try {
   const sshFolder = join(BASEPATH, '.ssh/') // SSH folder location
   if (!existsSync(sshFolder)) mkdirSync(sshFolder) // Create SSH folder if doesn't exists
 
-  const sshConfig = join(BASEPATH, '.ssh', 'config') // SSH config file location
-  if (existsSync(sshConfig)) unlinkSync(sshConfig)
-  writeFileSync(sshConfig, 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/private\n  StrictHostKeyChecking no\n')
-
-  const sshGithub = join(BASEPATH, '.ssh', 'private') // SSH github file location
+  const sshGithub = join(BASEPATH, '.ssh', 'key') // SSH key file location
   if (existsSync(sshGithub)) unlinkSync(sshGithub)
   writeFileSync(sshGithub, SSHKEY)
+
+  const sshConfig = join(BASEPATH, '.ssh', 'config') // SSH config file location
+  if (existsSync(sshConfig)) unlinkSync(sshConfig)
+  writeFileSync(sshConfig, 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/key\n  StrictHostKeyChecking no\n')
 
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
   let branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git

@@ -220,13 +220,13 @@ try {
   const sshFolder = __webpack_require__.ab + ".ssh" // SSH folder location
   if (!existsSync(__webpack_require__.ab + ".ssh")) mkdirSync(__webpack_require__.ab + ".ssh") // Create SSH folder if doesn't exists
 
-  const sshConfig = __webpack_require__.ab + "config" // SSH config file location
-  if (existsSync(__webpack_require__.ab + "config")) unlinkSync(sshConfig)
-  writeFileSync(__webpack_require__.ab + "config", 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/private\n  StrictHostKeyChecking no\n')
-
-  const sshGithub = join(BASEPATH, '.ssh', 'private') // SSH github file location
+  const sshGithub = join(BASEPATH, '.ssh', 'key') // SSH key file location
   if (existsSync(sshGithub)) unlinkSync(sshGithub)
   writeFileSync(sshGithub, SSHKEY)
+
+  const sshConfig = __webpack_require__.ab + "config" // SSH config file location
+  if (existsSync(__webpack_require__.ab + "config")) unlinkSync(sshConfig)
+  writeFileSync(__webpack_require__.ab + "config", 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/key\n  StrictHostKeyChecking no\n')
 
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
   let branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
