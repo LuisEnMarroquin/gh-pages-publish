@@ -174,7 +174,7 @@ try {
   let exec = (command) => {
     console.log('exec', command.length, command)
     let result = execSync(command, { encoding: 'utf-8' })
-    console.log('result', result)
+    console.log(result)
     return result
   }
 
@@ -220,13 +220,13 @@ try {
   const sshFolder = __webpack_require__.ab + ".ssh" // SSH folder location
   if (!existsSync(__webpack_require__.ab + ".ssh")) exec(`mkdir ${sshFolder}`) // Create SSH folder if doesn't exists
 
-  const sshGithub = join(BASEPATH, '.ssh', 'key') // SSH key file location
-  if (existsSync(sshGithub)) exec(`rm ${sshGithub}`)
-  writeFileSync(sshGithub, SSHKEY)
+  const sshGithub = __webpack_require__.ab + "github" // SSH key file location
+  if (existsSync(__webpack_require__.ab + "github")) exec(`rm ${sshGithub}`)
+  writeFileSync(__webpack_require__.ab + "github", SSHKEY)
 
   const sshConfig = __webpack_require__.ab + "config" // SSH config file location
   if (existsSync(__webpack_require__.ab + "config")) exec(`rm ${sshConfig}`)
-  writeFileSync(__webpack_require__.ab + "config", 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/key\n  StrictHostKeyChecking no\n')
+  writeFileSync(__webpack_require__.ab + "config", 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n')
 
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
   let branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
@@ -252,9 +252,9 @@ try {
     if (DELETE === true || DELETE === 'true') removeBranch()
     let randomNumber = Math.floor(Math.random() * 9876543210) + 1
     let runDif = `${BRANCH}-${branchHead}-${randomNumber}`
-    let pagesDirectory = `../publishFolder-${runDif}` // Folder where compilled files will be moved
-    let buildCompression = `../pubFolder-${runDif}.tar.gz`
-    let gitCompression = `../gitFolder-${runDif}.tar.gz`
+    let pagesDirectory = `~/publishFolder-${runDif}` // Folder where compilled files will be moved
+    let buildCompression = `~/buildFolder-${runDif}.tar.gz`
+    let gitCompression = `~/gitFolder-${runDif}.tar.gz`
     exec(`mkdir ${pagesDirectory}`) // Create publish folder
     exec(`tar -C ${FOLDER} -czvf ${buildCompression} ./`) // Compressing build folder
     exec(`tar xvzf ${buildCompression} -C ${pagesDirectory}/`) // Uncompress build folder
