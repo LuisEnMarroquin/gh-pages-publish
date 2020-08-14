@@ -168,13 +168,13 @@ const { homedir } = __webpack_require__(87)
 const core = __webpack_require__(470)
 const { execSync } = __webpack_require__(129)
 const { context } = __webpack_require__(469)
-const { existsSync, mkdirSync, writeFileSync } = __webpack_require__(747)
+const { existsSync, mkdirSync, writeFileSync, unlinkSync } = __webpack_require__(747)
 
 try {
   let exec = (command) => {
     console.log('exec', command.length, command)
     let result = execSync(command, { encoding: 'utf-8' })
-    console.log(result)
+    console.log('result', result)
     return result
   }
 
@@ -221,10 +221,12 @@ try {
   if (!existsSync(__webpack_require__.ab + ".ssh")) mkdirSync(__webpack_require__.ab + ".ssh") // Create SSH folder if doesn't exists
 
   const sshConfig = __webpack_require__.ab + "config" // SSH config file location
-  if (!existsSync(__webpack_require__.ab + "config")) writeFileSync(__webpack_require__.ab + "config", 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n')
+  if (existsSync(__webpack_require__.ab + "config")) unlinkSync(sshConfig)
+  writeFileSync(__webpack_require__.ab + "config", 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/private\n  StrictHostKeyChecking no\n')
 
-  const sshGithub = __webpack_require__.ab + "github" // SSH github file location
-  if (!existsSync(__webpack_require__.ab + "github")) writeFileSync(__webpack_require__.ab + "github", SSHKEY)
+  const sshGithub = join(BASEPATH, '.ssh', 'private') // SSH github file location
+  if (existsSync(sshGithub)) unlinkSync(sshGithub)
+  writeFileSync(sshGithub, SSHKEY)
 
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
   let branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
@@ -242,22 +244,20 @@ try {
     console.log(`The event payload is: ${payloadString}`)
   }
 
-  exec(`git config --global pull.rebase true`)
   exec(`git config --global user.name "${userName}"`)
   exec(`git config --global user.email "${userMail}"`)
-
-  try {
-    exec(`ssh -T git@github.com`)
-  } catch (error) {
-    console.log('GitHub login', error)
-  }
+  exec(`git config --global pull.rebase true`)
 
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
     if (DELETE === true || DELETE === 'true') removeBranch()
-    let pd = `publishFolder-${branchHead}` // File where compilled files will be moved
-    mkdirSync(`../${pd}`) // Create publish folder
-    exec(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`) // Compressing build folder
-    exec(`tar xvzf ../pubFolder.tar.gz -C ../${pd}/`) // Uncompress build folder
+    let randomNumber = Math.floor(Math.random() * 9876543210) + 1
+    let runDif = `${BRANCH}-${branchHead}-${randomNumber}`
+    let pagesDirectory = `../publishFolder-${runDif}` // Folder where compilled files will be moved
+    let buildCompression = `../pubFolder-${runDif}.tar.gz`
+    let gitCompression = `../gitFolder-${runDif}.tar.gz`
+    mkdirSync(`${pagesDirectory}`) // Create publish folder
+    exec(`tar -C ${FOLDER} -czvf ${buildCompression} ./`) // Compressing build folder
+    exec(`tar xvzf ${buildCompression} -C ${pagesDirectory}/`) // Uncompress build folder
     exec(`git stash`) // Remove any change to the folder to allow branch changing
     if (!branchExists(BRANCH)) {
       console.log('Creating new branch')
@@ -268,14 +268,15 @@ try {
       exec(`git checkout ${BRANCH}`) // Change to existing branch if exists
       exec(`git pull`) // Pull branch from remote
     }
-    exec(`tar -czvf ../gitFolder.tar.gz .git/`) // Compressing .git folder
-    exec(`tar xvzf ../gitFolder.tar.gz -C ../${pd}/`) // Uncompress .git folder
-    exec(`ls ../${pd} -a`) // List files in folder to publish
-    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} rm -r --cached . -f`)
-    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} status`)
-    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} add . --verbose`)
-    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} commit -m "${commitMessage}" --verbose`)
-    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} push --set-upstream origin ${BRANCH}`)
+    exec(`tar -czvf ${gitCompression} .git/`) // Compressing .git folder
+    exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
+    exec(`ls ${pagesDirectory} -a`) // List files in folder to publish
+    exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} rm -r --cached . -f`)
+    exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} status`)
+    exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} add . --verbose`)
+    exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} commit -m "${commitMessage}" --verbose`)
+    exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} push --set-upstream origin ${BRANCH}`)
+    exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
   }
 
   const time = (new Date()).toTimeString()
