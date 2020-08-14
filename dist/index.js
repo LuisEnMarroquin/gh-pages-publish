@@ -210,11 +210,11 @@ try {
   exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
 
   const sshGithub = join('~', '.ssh', 'github') // SSH key file location
-  exec(`${SSHKEY} > ${sshGithub}`, false)
+  exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
 
   const sshConfig = join('~', '.ssh', 'config') // SSH config file location
   let configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
-  exec(`${configText} > ${sshConfig}`)
+  exec(`echo "${configText}" > ${sshConfig}`)
 
   exec(`wc -l ${sshGithub} ${sshConfig}`)
 
