@@ -26,14 +26,10 @@ try {
     console.log('Deleting branch')
     try {
       exec(`git branch -d ${BRANCH}`)
-    } catch (error) {
-      console.error({ error })
-    }
+    } catch (error) {}
     try {
       exec(`git push --delete origin ${BRANCH}`)
-    } catch (error) {
-      console.error({ error })
-    }
+    } catch (error) {}
   }
 
   let BRANCH = core.getInput('BRANCH')
@@ -79,7 +75,7 @@ try {
   let pagesDirectory = `~/publishFolder-${runDif}` // Folder where compilled files will be moved
   let buildCompression = `~/buildFolder-${runDif}.tar.gz`
   let gitCompression = `~/gitFolder-${runDif}.tar.gz`
-  exec(`mkdir ${pagesDirectory}`) // Create publish folder
+  exec(`mkdir -p ${pagesDirectory}`) // Create publish folder
   exec(`tar -C ${FOLDER} -czvf ${buildCompression} ./`) // Compressing build folder
   exec(`tar xvzf ${buildCompression} -C ${pagesDirectory}/`) // Uncompress build folder
   exec(`git stash`) // Remove any change to the folder to allow branch changing
@@ -94,6 +90,7 @@ try {
   }
   exec(`tar -czvf ${gitCompression} .git/`) // Compressing .git folder
   exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
+  exec(`ls -R ${pagesDirectory}`)
   exec(`ls ${pagesDirectory} -a`) // List files in folder to publish
   exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} rm -r --cached . -f`)
   exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} status`)
