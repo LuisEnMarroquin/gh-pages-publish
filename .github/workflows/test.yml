@@ -12,7 +12,7 @@ jobs:
     - name: Get the repository
       uses: actions/checkout@v2
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v2.1.3
+      uses: LuisEnMarroquin/gh-pages-publish@v2.1.4
       id: hello
       with:
         BRANCH: gh-pages
@@ -24,7 +24,7 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.1.3
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.1.4
       with:
         BRANCH: gh-pages-mac
         DELETE: true

@@ -3,7 +3,7 @@ const { homedir } = require('os')
 const core = require('@actions/core')
 const { execSync } = require('child_process')
 const { context } = require('@actions/github')
-const { existsSync, mkdirSync, writeFileSync, unlinkSync } = require('fs')
+const { existsSync, writeFileSync } = require('fs')
 
 try {
   let exec = (command) => {
@@ -53,14 +53,14 @@ try {
   }
 
   const sshFolder = join(BASEPATH, '.ssh/') // SSH folder location
-  if (!existsSync(sshFolder)) mkdirSync(sshFolder) // Create SSH folder if doesn't exists
+  if (!existsSync(sshFolder)) exec(`mkdir ${sshFolder}`) // Create SSH folder if doesn't exists
 
   const sshGithub = join(BASEPATH, '.ssh', 'key') // SSH key file location
-  if (existsSync(sshGithub)) unlinkSync(sshGithub)
+  if (existsSync(sshGithub)) exec(`rm ${sshGithub}`)
   writeFileSync(sshGithub, SSHKEY)
 
   const sshConfig = join(BASEPATH, '.ssh', 'config') // SSH config file location
-  if (existsSync(sshConfig)) unlinkSync(sshConfig)
+  if (existsSync(sshConfig)) exec(`rm ${sshConfig}`)
   writeFileSync(sshConfig, 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/key\n  StrictHostKeyChecking no\n')
 
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
@@ -90,7 +90,7 @@ try {
     let pagesDirectory = `../publishFolder-${runDif}` // Folder where compilled files will be moved
     let buildCompression = `../pubFolder-${runDif}.tar.gz`
     let gitCompression = `../gitFolder-${runDif}.tar.gz`
-    mkdirSync(`${pagesDirectory}`) // Create publish folder
+    exec(`mkdir ${pagesDirectory}`) // Create publish folder
     exec(`tar -C ${FOLDER} -czvf ${buildCompression} ./`) // Compressing build folder
     exec(`tar xvzf ${buildCompression} -C ${pagesDirectory}/`) // Uncompress build folder
     exec(`git stash`) // Remove any change to the folder to allow branch changing

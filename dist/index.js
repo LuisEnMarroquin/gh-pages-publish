@@ -168,7 +168,7 @@ const { homedir } = __webpack_require__(87)
 const core = __webpack_require__(470)
 const { execSync } = __webpack_require__(129)
 const { context } = __webpack_require__(469)
-const { existsSync, mkdirSync, writeFileSync, unlinkSync } = __webpack_require__(747)
+const { existsSync, writeFileSync } = __webpack_require__(747)
 
 try {
   let exec = (command) => {
@@ -218,14 +218,14 @@ try {
   }
 
   const sshFolder = __webpack_require__.ab + ".ssh" // SSH folder location
-  if (!existsSync(__webpack_require__.ab + ".ssh")) mkdirSync(__webpack_require__.ab + ".ssh") // Create SSH folder if doesn't exists
+  if (!existsSync(__webpack_require__.ab + ".ssh")) exec(`mkdir ${sshFolder}`) // Create SSH folder if doesn't exists
 
   const sshGithub = join(BASEPATH, '.ssh', 'key') // SSH key file location
-  if (existsSync(sshGithub)) unlinkSync(sshGithub)
+  if (existsSync(sshGithub)) exec(`rm ${sshGithub}`)
   writeFileSync(sshGithub, SSHKEY)
 
   const sshConfig = __webpack_require__.ab + "config" // SSH config file location
-  if (existsSync(__webpack_require__.ab + "config")) unlinkSync(sshConfig)
+  if (existsSync(__webpack_require__.ab + "config")) exec(`rm ${sshConfig}`)
   writeFileSync(__webpack_require__.ab + "config", 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/key\n  StrictHostKeyChecking no\n')
 
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
@@ -255,7 +255,7 @@ try {
     let pagesDirectory = `../publishFolder-${runDif}` // Folder where compilled files will be moved
     let buildCompression = `../pubFolder-${runDif}.tar.gz`
     let gitCompression = `../gitFolder-${runDif}.tar.gz`
-    mkdirSync(`${pagesDirectory}`) // Create publish folder
+    exec(`mkdir ${pagesDirectory}`) // Create publish folder
     exec(`tar -C ${FOLDER} -czvf ${buildCompression} ./`) // Compressing build folder
     exec(`tar xvzf ${buildCompression} -C ${pagesDirectory}/`) // Uncompress build folder
     exec(`git stash`) // Remove any change to the folder to allow branch changing
