@@ -90,7 +90,7 @@ try {
   }
   exec(`tar -czvf ${gitCompression} .git/`) // Compressing .git folder
   exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
-  exec(`ls ${pagesDirectory} -a -R`) // List files in folder to publish
+  exec(`ls -aR ${pagesDirectory}`) // List files in folder to publish
   exec(`cd ${pagesDirectory} && git rm -r --cached . -f`)
   exec(`cd ${pagesDirectory} && git status`)
   exec(`cd ${pagesDirectory} && git add . --verbose`)

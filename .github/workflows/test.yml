@@ -12,7 +12,7 @@ jobs:
     - name: Get the repository
       uses: actions/checkout@v2
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v2.1.94
+      uses: LuisEnMarroquin/gh-pages-publish@v2.1.95
       id: hello
       with:
         BRANCH: gh-pages
@@ -20,11 +20,13 @@ jobs:
         SSHKEY: ${{ secrets.SSH }}
     - name: Use the output from the `hello` step
       run: echo "The time was ${{ steps.hello.outputs.TIMING }}"
+    - name: test SSH
+      run: ssh -T git@github.com
   mac:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.1.94
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.1.95
       with:
         BRANCH: gh-pages-mac
         DELETE: true
