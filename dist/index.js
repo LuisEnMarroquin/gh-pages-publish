@@ -204,9 +204,11 @@ try {
 
   const sshFolder = join('~', '.ssh/') // SSH folder location
   exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
+  exec(`chmod 755 ${sshFolder}`)
 
   const sshGithub = join('~', '.ssh', 'github') // SSH key file location
   exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
+  exec(`chmod 600 ${sshGithub}`)
 
   const sshConfig = join('~', '.ssh', 'config') // SSH config file location
   let configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
