@@ -1,14 +1,13 @@
 const { join } = require('path')
 const core = require('@actions/core')
-const { writeFileSync } = require('fs')
 const { execSync } = require('child_process')
 const { context } = require('@actions/github')
 
 try {
-  let exec = (command) => {
-    console.log('exec', command.length, command)
+  let exec = (command, display = true) => {
+    if (display) console.log('exec', command.length, command)
     let result = execSync(command, { encoding: 'utf-8' })
-    console.log(result)
+    if (display) console.log(result)
     return result
   }
 
@@ -46,10 +45,11 @@ try {
   exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
 
   const sshGithub = join('~', '.ssh', 'github') // SSH key file location
-  writeFileSync(sshGithub, SSHKEY)
+  exec(`(echo ${SSHKEY}) > ${sshGithub}`, false)
 
   const sshConfig = join('~', '.ssh', 'config') // SSH config file location
-  writeFileSync(sshConfig, 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n')
+  let configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
+  exec(`(echo ${configText}) > ${sshConfig}`)
 
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
   let branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
