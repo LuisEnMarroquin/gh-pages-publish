@@ -255,8 +255,7 @@ try {
   }
   exec(`tar -czvf ${gitCompression} .git/`) // Compressing .git folder
   exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
-  exec(`ls -R ${pagesDirectory}`)
-  exec(`ls ${pagesDirectory} -a`) // List files in folder to publish
+  exec(`ls ${pagesDirectory} -a -R`) // List files in folder to publish
   exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} rm -r --cached . -f`)
   exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} status`)
   exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} add . --verbose`)
