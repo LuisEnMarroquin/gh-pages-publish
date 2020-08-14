@@ -172,8 +172,9 @@ const { existsSync, mkdirSync, writeFileSync } = __webpack_require__(747)
 
 try {
   let exec = (command) => {
+    console.log('exec', command.length, command)
     let result = execSync(command, { encoding: 'utf-8' })
-    console.log(command.length, command, result)
+    console.log(result)
     return result
   }
 
@@ -186,6 +187,20 @@ try {
   let branchExists = (branch) => {
     let remoteExists = rmLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
     return (remoteExists.length > 0)
+  }
+
+  let removeBranch = () => { // Removes local and remote branch
+    console.log('Deleting branch')
+    try {
+      exec(`git branch -d ${BRANCH}`)
+    } catch (error) {
+      console.error({ error })
+    }
+    try {
+      exec(`git push --delete origin ${BRANCH}`)
+    } catch (error) {
+      console.error({ error })
+    }
   }
 
   let BASEPATH = homedir()
@@ -231,25 +246,19 @@ try {
   exec(`git config --global user.name "${userName}"`)
   exec(`git config --global user.email "${userMail}"`)
 
+  try {
+    exec(`ssh -T git@github.com`)
+  } catch (error) {
+    console.log('GitHub login', error)
+  }
+
   if (process.argv[2] !== 'dev') { // Shouldn't run this on my local machine
-    if (DELETE === true || DELETE === 'true') { // Removes local and remote branch
-      console.log('Deleting branch')
-      try {
-        exec(`git branch -d ${BRANCH}`)
-      } catch (error) {
-        console.error({ error })
-      }
-      try {
-        exec(`git push --delete origin ${BRANCH}`)
-      } catch (error) {
-        console.error({ error })
-      }
-    }
-    exec(`git stash`) // Remove any change to build folder
+    if (DELETE === true || DELETE === 'true') removeBranch()
     let pd = `publishFolder-${branchHead}` // File where compilled files will be moved
     mkdirSync(`../${pd}`) // Create publish folder
     exec(`tar -C ${FOLDER} -czvf ../pubFolder.tar.gz ./`) // Compressing build folder
     exec(`tar xvzf ../pubFolder.tar.gz -C ../${pd}/`) // Uncompress build folder
+    exec(`git stash`) // Remove any change to the folder to allow branch changing
     if (!branchExists(BRANCH)) {
       console.log('Creating new branch')
       exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
@@ -258,13 +267,14 @@ try {
       exec(`git fetch origin ${BRANCH}`) // Pull branch from remote
       exec(`git checkout ${BRANCH}`) // Change to existing branch if exists
       exec(`git pull`) // Pull branch from remote
-      exec(`git rm -r --cached . -f`) // Untracking previous files
     }
     exec(`tar -czvf ../gitFolder.tar.gz .git/`) // Compressing .git folder
     exec(`tar xvzf ../gitFolder.tar.gz -C ../${pd}/`) // Uncompress .git folder
+    exec(`ls ../${pd} -a`) // List files in folder to publish
+    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} rm -r --cached . -f`)
     exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} status`)
-    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} add .`)
-    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} commit -m "${commitMessage}"`)
+    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} add . --verbose`)
+    exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} commit -m "${commitMessage}" --verbose`)
     exec(`git --git-dir=../${pd}/.git --work-tree=../${pd} push --set-upstream origin ${BRANCH}`)
   }
 
