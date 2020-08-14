@@ -6,7 +6,6 @@
   "license": "GPL-3.0",
   "author": "LuisEnMarroquin <luis@marroquin.dev>",
   "scripts": {
-    "start": "node clean.js && node index.js dev",
     "build": "ncc build index.js"
   },
   "dependencies": {
