@@ -91,11 +91,11 @@ try {
   exec(`tar -czvf ${gitCompression} .git/`) // Compressing .git folder
   exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
   exec(`ls ${pagesDirectory} -a -R`) // List files in folder to publish
-  exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} rm -r --cached . -f`)
-  exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} status`)
-  exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} add . --verbose`)
-  exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} commit -m "${commitMessage}" --verbose`)
-  exec(`git --git-dir=${pagesDirectory}/.git --work-tree=${pagesDirectory} push --set-upstream origin ${BRANCH}`)
+  exec(`cd ${pagesDirectory} && git rm -r --cached . -f`)
+  exec(`cd ${pagesDirectory} && git status`)
+  exec(`cd ${pagesDirectory} && git add . --verbose`)
+  exec(`cd ${pagesDirectory} && git commit -m "${commitMessage}" --verbose`)
+  exec(`cd ${pagesDirectory} && git push --set-upstream origin ${BRANCH}`)
   exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
 
   const time = (new Date()).toTimeString()
