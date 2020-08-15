@@ -31,6 +31,12 @@ try {
     } catch (error) {}
   }
 
+  let httpsToSsh = (https) => {
+    let ssh = https.replace('https://github.com/', 'git@github.com:')
+    ssh += '.git'
+    return ssh
+  }
+
   let BRANCH = core.getInput('BRANCH')
   let DELETE = core.getInput('DELETE')
   let FOLDER = core.getInput('FOLDER')
@@ -67,6 +73,13 @@ try {
   exec(`echo "${configText}" > ${sshConfig}`)
   exec(`wc -l ${sshGithub} ${sshConfig}`)
 
+  let oldOrigin = rmLineBreaks(exec(`git remote get-url origin`)) // Get https origin
+  let newOrigin = rmLineBreaks(httpsToSsh(oldOrigin)) // Create ssh origin from https origin
+  exec(`git remote set-url origin ${newOrigin}`) // Set new ssh origin
+  exec(`git remote get-url origin`) // Show new ssh origin
+  exec(`git config --global --list`) // Show global git config
+  exec(`git config --list`) // Show project git config
+
   if (DELETE === true || DELETE === 'true') removeBranch()
   let randomNumber = Math.floor(Math.random() * 9876543210) + 1
   let runDif = `${BRANCH}-${branchHead}-${randomNumber}`
@@ -95,20 +108,6 @@ try {
   exec(`cd ${pagesDirectory} && git status`)
   exec(`cd ${pagesDirectory} && git add . --verbose`)
   exec(`cd ${pagesDirectory} && git commit --allow-empty -m "${commitMessage}" --verbose`)
-
-  let httpsToSsh = (https) => {
-    let ssh = https.replace('https://github.com/', 'git@github.com:')
-    ssh += '.git'
-    return ssh
-  }
-
-  let oldOrigin = rmLineBreaks(exec(`git remote get-url origin`))
-  let newOrigin = rmLineBreaks(httpsToSsh(oldOrigin))
-  exec(`cd ${pagesDirectory} && git remote set-url origin ${newOrigin}`)
-  exec(`cd ${pagesDirectory} && git remote get-url origin`)
-
-  exec(`git config --global --list`)
-  exec(`cd ${pagesDirectory} && git config --list`)
 
   exec(`cd ${pagesDirectory} && git push --set-upstream origin ${BRANCH}`)
   exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
