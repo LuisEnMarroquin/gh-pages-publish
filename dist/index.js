@@ -204,15 +204,12 @@ try {
   const sshFolder = '~/.ssh/' // SSH folder location
   exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
   exec(`chmod 755 ${sshFolder}`)
-
   const sshGithub = '~/.ssh/github' // SSH key file location
   exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
   exec(`chmod 600 ${sshGithub}`)
-
   const sshConfig = '~/.ssh/config' // SSH config file location
   let configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
   exec(`echo "${configText}" > ${sshConfig}`)
-
   exec(`wc -l ${sshGithub} ${sshConfig}`)
 
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
@@ -264,6 +261,11 @@ try {
   exec(`cd ${pagesDirectory} && git add . --verbose`)
   exec(`cd ${pagesDirectory} && git commit --allow-empty -m "${commitMessage}" --verbose`)
   exec(`cd ${pagesDirectory} && git push --set-upstream origin ${BRANCH}`)
+
+  exec(`git remote get-url origin`)
+  exec(`git config --global --list`)
+  exec(`cd ${pagesDirectory} && git config --list`)
+
   exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
 
   const time = (new Date()).toTimeString()
