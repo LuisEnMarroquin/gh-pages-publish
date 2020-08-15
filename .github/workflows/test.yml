@@ -12,7 +12,7 @@ jobs:
     - name: Get the repository
       uses: actions/checkout@v2
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v2.2.3
+      uses: LuisEnMarroquin/gh-pages-publish@v2.2.4
       id: hello
       with:
         FOLDER: dist
@@ -25,7 +25,7 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.2.3
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.2.4
       with:
         BRANCH: gh-pages-mac
         DELETE: true
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.2.3
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.2.4
       with:
         BRANCH: gh-pages-16
         DELETE: true
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.2.3
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.2.4
       with:
         BRANCH: gh-pages-20
         DELETE: true
