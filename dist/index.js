@@ -262,7 +262,7 @@ try {
   exec(`cd ${pagesDirectory} && git rm -r --cached . -f`)
   exec(`cd ${pagesDirectory} && git status`)
   exec(`cd ${pagesDirectory} && git add . --verbose`)
-  exec(`cd ${pagesDirectory} && git commit -m "${commitMessage}" --verbose`)
+  exec(`cd ${pagesDirectory} && git commit --allow-empty -m "${commitMessage}" --verbose`)
   exec(`cd ${pagesDirectory} && git push --set-upstream origin ${BRANCH}`)
   exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
 
