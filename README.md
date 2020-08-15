@@ -50,7 +50,7 @@ on:
 jobs:
   deploy:
   - uses: actions/checkout@v2
-  - uses: LuisEnMarroquin/gh-pages-publish@v2.2.4
+  - uses: LuisEnMarroquin/gh-pages-publish@v2.3
     with:
       FOLDER: dist
       SSHKEY: ${{ secrets.SSH }}
@@ -64,7 +64,7 @@ Remember to change the version number first for all files
 npm run build # Update your dist/index.js
 git add . # Add all files
 git commit -m "Use zeit/ncc" # Commit the files
-git tag -a -m "Published v2.2.4" v2.2.4 # Tag your release
+git tag -a -m "Published v2.3" v2.3 # Tag your release
 git push --follow-tags # Push commit and tags
 ```
 
