@@ -50,8 +50,7 @@ on:
 jobs:
   deploy:
   - uses: actions/checkout@v2
-  - name: Deploy to gh-pages
-    uses: LuisEnMarroquin/gh-pages-publish@v2.2.1
+  - uses: LuisEnMarroquin/gh-pages-publish@v2.2.1
     with:
       FOLDER: dist
       SSHKEY: ${{ secrets.SSH }}
