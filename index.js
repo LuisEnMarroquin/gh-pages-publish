@@ -63,7 +63,7 @@ try {
   exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
   exec(`chmod 600 ${sshGithub}`)
   const sshConfig = '~/.ssh/config' // SSH config file location
-  let configText = `Host github.com\n  HostName github.com\n  User ${userName}\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n`
+  let configText = `Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n`
   exec(`echo "${configText}" > ${sshConfig}`)
   exec(`wc -l ${sshGithub} ${sshConfig}`)
 
