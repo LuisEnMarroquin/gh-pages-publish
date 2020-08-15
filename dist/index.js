@@ -260,12 +260,22 @@ try {
   exec(`cd ${pagesDirectory} && git status`)
   exec(`cd ${pagesDirectory} && git add . --verbose`)
   exec(`cd ${pagesDirectory} && git commit --allow-empty -m "${commitMessage}" --verbose`)
-  exec(`cd ${pagesDirectory} && git push --set-upstream origin ${BRANCH}`)
 
+  let httpsToSsh = (https) => {
+    let ssh = https.replace('https://github.com/', 'git@github.com:')
+    ssh += '.git'
+    return ssh
+  }
+
+  let oldOrigin = rmLineBreaks(exec(`git remote get-url origin`))
+  let newOrigin = rmLineBreaks(httpsToSsh(oldOrigin))
+  exec(`git remote set-url origin ${newOrigin}`)
   exec(`git remote get-url origin`)
+
   exec(`git config --global --list`)
   exec(`cd ${pagesDirectory} && git config --list`)
 
+  exec(`cd ${pagesDirectory} && git push --set-upstream origin ${BRANCH}`)
   exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
 
   const time = (new Date()).toTimeString()
