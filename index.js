@@ -1,4 +1,3 @@
-const { join } = require('path')
 const core = require('@actions/core')
 const { execSync } = require('child_process')
 const { context } = require('@actions/github')
@@ -37,15 +36,15 @@ try {
   let FOLDER = core.getInput('FOLDER')
   let SSHKEY = core.getInput('SSHKEY')
 
-  const sshFolder = join('~', '.ssh/') // SSH folder location
+  const sshFolder = '~/.ssh/' // SSH folder location
   exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
   exec(`chmod 755 ${sshFolder}`)
 
-  const sshGithub = join('~', '.ssh', 'github') // SSH key file location
+  const sshGithub = '~/.ssh/github' // SSH key file location
   exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
   exec(`chmod 600 ${sshGithub}`)
 
-  const sshConfig = join('~', '.ssh', 'config') // SSH config file location
+  const sshConfig = '~/.ssh/config' // SSH config file location
   let configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
   exec(`echo "${configText}" > ${sshConfig}`)
 
@@ -74,7 +73,7 @@ try {
   if (DELETE === true || DELETE === 'true') removeBranch()
   let randomNumber = Math.floor(Math.random() * 9876543210) + 1
   let runDif = `${BRANCH}-${branchHead}-${randomNumber}`
-  let pagesDirectory = `~/publishFolder-${runDif}` // Folder where compilled files will be moved
+  let pagesDirectory = `~/publishFolder-${runDif}`
   let buildCompression = `~/buildFolder-${runDif}.tar.gz`
   let gitCompression = `~/gitFolder-${runDif}.tar.gz`
   exec(`mkdir -p ${pagesDirectory}`) // Create publish folder
@@ -93,6 +92,8 @@ try {
   exec(`tar -czvf ${gitCompression} .git/`) // Compressing .git folder
   exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
   exec(`ls -aR ${pagesDirectory}`) // List files in folder to publish
+  exec(`cd ${pagesDirectory} && git config user.name ${userName}`)
+  exec(`cd ${pagesDirectory} && git config user.email ${userMail}`)
   exec(`cd ${pagesDirectory} && git rm -r --cached . -f`)
   exec(`cd ${pagesDirectory} && git status`)
   exec(`cd ${pagesDirectory} && git add . --verbose`)
