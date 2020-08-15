@@ -201,17 +201,6 @@ try {
   let FOLDER = core.getInput('FOLDER')
   let SSHKEY = core.getInput('SSHKEY')
 
-  const sshFolder = '~/.ssh/' // SSH folder location
-  exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
-  exec(`chmod 755 ${sshFolder}`)
-  const sshGithub = '~/.ssh/github' // SSH key file location
-  exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
-  exec(`chmod 600 ${sshGithub}`)
-  const sshConfig = '~/.ssh/config' // SSH config file location
-  let configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
-  exec(`echo "${configText}" > ${sshConfig}`)
-  exec(`wc -l ${sshGithub} ${sshConfig}`)
-
   let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
   let branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
 
@@ -220,10 +209,10 @@ try {
   let userName = 'LuisEnMarroquin'
   let userMail = 'mluis651@gmail.com'
   try {
-    userName = payload.pusher ? payload.pusher.name : userName
-    userMail = payload.pusher ? payload.pusher.email : userMail
+    userName = payload.repository.owner.name
+    userMail = payload.repository.owner.email
   } catch (error) {
-    console.error({ error })
+    console.error('Payload error', { error })
     const payloadString = JSON.stringify(payload, undefined, 2) // Get the JSON webhook payload for the event that triggered the workflow
     console.log(`The event payload is: ${payloadString}`)
   }
@@ -231,6 +220,17 @@ try {
   exec(`git config --global user.name "${userName}"`)
   exec(`git config --global user.email "${userMail}"`)
   exec(`git config --global pull.rebase true`)
+
+  const sshFolder = '~/.ssh/' // SSH folder location
+  exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
+  exec(`chmod 755 ${sshFolder}`)
+  const sshGithub = '~/.ssh/github' // SSH key file location
+  exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
+  exec(`chmod 600 ${sshGithub}`)
+  const sshConfig = '~/.ssh/config' // SSH config file location
+  let configText = `Host github.com\n  HostName github.com\n  User ${userName}\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n`
+  exec(`echo "${configText}" > ${sshConfig}`)
+  exec(`wc -l ${sshGithub} ${sshConfig}`)
 
   if (DELETE === true || DELETE === 'true') removeBranch()
   let randomNumber = Math.floor(Math.random() * 9876543210) + 1
