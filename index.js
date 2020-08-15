@@ -104,8 +104,8 @@ try {
 
   let oldOrigin = rmLineBreaks(exec(`git remote get-url origin`))
   let newOrigin = rmLineBreaks(httpsToSsh(oldOrigin))
-  exec(`git remote set-url origin ${newOrigin}`)
-  exec(`git remote get-url origin`)
+  exec(`cd ${pagesDirectory} && git remote set-url origin ${newOrigin}`)
+  exec(`cd ${pagesDirectory} && git remote get-url origin`)
 
   exec(`git config --global --list`)
   exec(`cd ${pagesDirectory} && git config --list`)
