@@ -40,7 +40,7 @@ The time when this action finished execution.
 ## Example usage
 
 ```yml
-name: Deploy to gh-pages
+name: Deployment
 
 on:
   push:
@@ -49,11 +49,13 @@ on:
 
 jobs:
   deploy:
-  - uses: actions/checkout@v2
-  - uses: LuisEnMarroquin/gh-pages-publish@v2.3
-    with:
-      FOLDER: dist
-      SSHKEY: ${{ secrets.SSH }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3
+      with:
+        FOLDER: dist
+        SSHKEY: ${{ secrets.SSH }}
 ```
 
 ## Publish action
