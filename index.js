@@ -191,9 +191,6 @@ try {
     try {
       exec(`git branch -d ${BRANCH}`)
     } catch (error) {}
-    try {
-      exec(`git push --delete origin ${BRANCH}`)
-    } catch (error) {}
   }
 
   let httpsToSsh = (https) => {
@@ -213,10 +210,10 @@ try {
   const commitMessage = `Deploy to ${BRANCH} from ${branchName} @ ${branchHead} 🚀`
   const payload = context.payload
   let userName = 'LuisEnMarroquin'
-  let userMail = 'mluis651@gmail.com'
+  let userEmail = 'mluis651@gmail.com'
   try {
-    userName = payload.repository.owner.name
-    userMail = payload.repository.owner.email
+    userName = payload.pusher ? (payload.pusher.name || userName) : userName
+    userEmail = payload.pusher ? (payload.pusher.email || userEmail) : userEmail
   } catch (error) {
     console.error('Payload error', { error })
     const payloadString = JSON.stringify(payload, undefined, 2) // Get the JSON webhook payload for the event that triggered the workflow
@@ -224,7 +221,7 @@ try {
   }
 
   exec(`git config --global user.name "${userName}"`)
-  exec(`git config --global user.email "${userMail}"`)
+  exec(`git config --global user.email "${userEmail}"`)
   exec(`git config --global pull.rebase true`)
 
   const sshFolder = '~/.ssh/' // SSH folder location
@@ -268,13 +265,12 @@ try {
   exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
   exec(`ls -aR ${pagesDirectory}`) // List files in folder to publish
   exec(`cd ${pagesDirectory} && git config user.name ${userName}`)
-  exec(`cd ${pagesDirectory} && git config user.email ${userMail}`)
+  exec(`cd ${pagesDirectory} && git config user.email ${userEmail}`)
   exec(`cd ${pagesDirectory} && git rm -r --cached . -f`)
   exec(`cd ${pagesDirectory} && git status`)
   exec(`cd ${pagesDirectory} && git add . --verbose`)
   exec(`cd ${pagesDirectory} && git commit --allow-empty -m "${commitMessage}" --verbose`)
-
-  exec(`cd ${pagesDirectory} && git push --set-upstream origin ${BRANCH}`)
+  exec(`cd ${pagesDirectory} && git push -f --set-upstream origin ${BRANCH}`)
   exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
 
   const time = (new Date()).toTimeString()
