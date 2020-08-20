@@ -6,13 +6,22 @@ on:
     - master
 
 jobs:
-  deploy:
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.2
+      with:
+        BRANCH: gh-pages-mac
+        FOLDER: dist
+        SSHKEY: ${{ secrets.SSH }}
+  ubuntu:
     runs-on: ubuntu-latest
     steps:
     - name: Get the repository
       uses: actions/checkout@v2
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v2.3.1
+      uses: LuisEnMarroquin/gh-pages-publish@v2.3.2
       id: hello
       with:
         FOLDER: dist
@@ -21,13 +30,3 @@ jobs:
       run: echo "The time was ${{ steps.hello.outputs.TIMING }}"
     - name: Test SSH connection
       run: ssh -T git@github.com || true
-  macos:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.1
-      with:
-        BRANCH: gh-pages-mac
-        DELETE: true
-        FOLDER: dist
-        SSHKEY: ${{ secrets.SSH }}

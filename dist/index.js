@@ -186,13 +186,6 @@ try {
     return (remoteExists.length > 0)
   }
 
-  let removeBranch = () => { // Removes local and remote branch
-    console.log('Deleting branch')
-    try {
-      exec(`git branch -d ${BRANCH}`)
-    } catch (error) {}
-  }
-
   let httpsToSsh = (https) => {
     let ssh = https.replace('https://github.com/', 'git@github.com:')
     ssh += '.git'
@@ -200,12 +193,11 @@ try {
   }
 
   let BRANCH = core.getInput('BRANCH')
-  let DELETE = core.getInput('DELETE')
   let FOLDER = core.getInput('FOLDER')
   let SSHKEY = core.getInput('SSHKEY')
 
-  let branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
-  let branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
+  const branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
+  const branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
 
   const commitMessage = `Deploy to ${BRANCH} from ${branchName} @ ${branchHead} 🚀`
   const payload = context.payload
@@ -231,7 +223,7 @@ try {
   exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
   exec(`chmod 600 ${sshGithub}`)
   const sshConfig = '~/.ssh/config' // SSH config file location
-  let configText = `Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n`
+  const configText = `Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n`
   exec(`echo "${configText}" > ${sshConfig}`)
   exec(`wc -l ${sshGithub} ${sshConfig}`)
 
@@ -242,7 +234,6 @@ try {
   exec(`git config --global --list`) // Show global git config
   exec(`git config --list`) // Show project git config
 
-  if (DELETE === true || DELETE === 'true') removeBranch()
   let randomNumber = Math.floor(Math.random() * 9876543210) + 1
   let runDif = `${BRANCH}-${branchHead}-${randomNumber}`
   let pagesDirectory = `~/publishFolder-${runDif}`
@@ -256,7 +247,7 @@ try {
     console.log('Creating new branch')
     exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
   } else {
-    console.log('Branch existed previously')
+    console.log('Branch already existed')
     exec(`git fetch origin ${BRANCH}`) // Pull branch from remote
     exec(`git checkout ${BRANCH}`) // Change to existing branch if exists
     exec(`git pull`) // Pull branch from remote

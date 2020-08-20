@@ -9,10 +9,6 @@ inputs:
     description: 'Branch to move'
     default: 'gh-pages'
     required: false
-  DELETE:
-    description: 'Delete commit history'
-    default: false
-    required: false
   FOLDER:
     description: 'Folder to move'
     required: true

@@ -1,25 +1,18 @@
-# GitHub Pages Publish JavaScript Action
+# GitHub Pages Publish GitHub Action
 
-![Standard](https://img.shields.io/badge/code_style-standard-brightgreen.svg)
 ![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/Testing/badge.svg)
 
 This action sends your build folder to a new/existing branch.
 
-Note 1: This doesn't work with `actions/checkout@v1`, use `actions/checkout@v2`
+Note 1: This action only works for `Linux` and `macOS` hosts, this means no `Windows`.
 
-Note 2: This action only works for `Linux` and `macOS` hosts, this means no `Windows`.
-
-Note 3: Please use the latest version avaliable, previous versions may have more errors.
+Note 2: Please use the latest version avaliable, previous versions may have more errors.
 
 ## Inputs
 
 ### `BRANCH`
 
 **Optional** The branch where your project will be deployed. Default `gh-pages`.
-
-### `DELETE`
-
-**Optional** If should delete the commit history of the deploy branch. Default `false`.
 
 ### `FOLDER`
 
@@ -52,11 +45,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.1
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.2
       with:
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
 ```
+
+<!--
 
 ## Publish action
 
@@ -66,12 +61,12 @@ Remember to change the version number first for all files
 npm run build # Update your dist/index.js
 git add . # Add all files
 git commit -m "Use zeit/ncc" # Commit the files
-git tag -a -m "Published v2.3.1" v2.3.1 # Tag your release
+git tag -a -m "Published v2.3.2" v2.3.2 # Tag your release
 git push --follow-tags # Push commit and tags
 ```
+
+-->
 
 ## References
 
 * [Inspired by JamesIves action](https://github.com/JamesIves/github-pages-deploy-action)
-
-* [Creating a JavaScript action](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action)
