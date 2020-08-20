@@ -5,6 +5,10 @@
   "main": "index.js",
   "license": "GPL-3.0",
   "author": "LuisEnMarroquin <luis@marroquin.dev>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LuisEnMarroquin/gh-pages-publish.git"
+  },
   "scripts": {
     "build": "ncc build index.js"
   },
