@@ -38,7 +38,7 @@ name: Deployment
 on:
   push:
     branches:
-    - master
+    - main
 
 jobs:
   deploy:
