@@ -2,11 +2,12 @@
 
 ![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/Testing/badge.svg)
 
+![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/macOS/badge.svg)
+![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/Ubuntu/badge.svg)
+
 This action sends your build folder to a new/existing branch.
 
-Note 1: This action only works for `Linux` and `macOS` hosts, this means no `Windows`.
-
-Note 2: Please use the latest version avaliable, previous versions may have more errors.
+Note: This action only works for `Linux` and `macOS` hosts, this means no `Windows`.
 
 ## Inputs
 

@@ -1,4 +1,4 @@
-name: Testing
+name: Ubuntu
 
 on:
   push:
@@ -6,15 +6,6 @@ on:
     - main
 
 jobs:
-  macos:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.3
-      with:
-        BRANCH: gh-pages-mac
-        FOLDER: dist
-        SSHKEY: ${{ secrets.SSH }}
   ubuntu:
     runs-on: ubuntu-latest
     steps:
