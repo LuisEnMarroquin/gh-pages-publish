@@ -10,7 +10,7 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.2
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.3
       with:
         BRANCH: gh-pages-mac
         FOLDER: dist
@@ -21,7 +21,7 @@ jobs:
     - name: Get the repository
       uses: actions/checkout@v2
     - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v2.3.2
+      uses: LuisEnMarroquin/gh-pages-publish@v2.3.3
       id: hello
       with:
         FOLDER: dist

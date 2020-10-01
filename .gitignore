@@ -21,3 +21,6 @@ github
 # Other package managers
 yarn.lock
 npm-shrinkwrap.json
+
+# misc
+*.log*
