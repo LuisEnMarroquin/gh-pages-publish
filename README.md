@@ -1,7 +1,5 @@
 # GitHub Pages Publish GitHub Action
 
-![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/Testing/badge.svg)
-
 ![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/macOS/badge.svg)
 ![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/Ubuntu/badge.svg)
 
