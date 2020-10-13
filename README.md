@@ -40,7 +40,7 @@ on:
     - main
 
 jobs:
-  macos:
+  deploy:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
