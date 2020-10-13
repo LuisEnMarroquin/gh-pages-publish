@@ -42,6 +42,8 @@ module.exports =
 /******/ 		// Load entry module and return exports
 /******/ 		return __webpack_require__(104);
 /******/ 	};
+/******/ 	// initialize runtime
+/******/ 	runtime(__webpack_require__);
 /******/
 /******/ 	// run startup
 /******/ 	return startup();
@@ -223,46 +225,54 @@ exports.issueCommand = issueCommand;
 /***/ }),
 
 /***/ 104:
-/***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
+/***/ (function(__unusedmodule, __webpack_exports__, __webpack_require__) {
 
-const core = __webpack_require__(470)
-const { execSync } = __webpack_require__(129)
-const { context } = __webpack_require__(469)
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(470);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(469);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var child_process__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(129);
+/* harmony import */ var child_process__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(child_process__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
 
 try {
-  let exec = (command, display = true) => {
+  const exec = (command, display = true) => {
     if (display) console.log('exec', command.length, command)
-    let result = execSync(command, { encoding: 'utf-8' })
+    const result = Object(child_process__WEBPACK_IMPORTED_MODULE_2__.execSync)(command, { encoding: 'utf-8' })
     if (display) console.log(result)
     return result
   }
 
-  let rmLineBreaks = (text) => {
+  const rmLineBreaks = (text) => {
     text = text.replace('\r\n', '') // Windows
     text = text.replace('\n', '') // Unix
     return text
   }
 
-  let branchExists = (branch) => {
-    let remoteExists = rmLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
+  const branchExists = (branch) => {
+    const remoteExists = rmLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
     return (remoteExists.length > 0)
   }
 
-  let httpsToSsh = (https) => {
+  const httpsToSsh = (https) => {
     let ssh = https.replace('https://github.com/', 'git@github.com:')
     ssh += '.git'
     return ssh
   }
 
-  let BRANCH = core.getInput('BRANCH')
-  let FOLDER = core.getInput('FOLDER')
-  let SSHKEY = core.getInput('SSHKEY')
+  const BRANCH = Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('BRANCH')
+  const FOLDER = Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('FOLDER')
+  const SSHKEY = Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('SSHKEY')
 
   const branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
   const branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
 
   const commitMessage = `Deploy to ${BRANCH} from ${branchName} @ ${branchHead} 🚀`
-  const payload = context.payload
+  const payload = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload
   let userName = 'LuisEnMarroquin'
   let userEmail = 'mluis651@gmail.com'
   try {
@@ -276,7 +286,7 @@ try {
 
   exec(`git config --global user.name "${userName}"`)
   exec(`git config --global user.email "${userEmail}"`)
-  exec(`git config --global pull.rebase true`)
+  exec('git config --global pull.rebase true')
 
   const sshFolder = '~/.ssh/' // SSH folder location
   exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
@@ -285,26 +295,26 @@ try {
   exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
   exec(`chmod 600 ${sshGithub}`)
   const sshConfig = '~/.ssh/config' // SSH config file location
-  const configText = `Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n`
+  const configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
   exec(`echo "${configText}" > ${sshConfig}`)
   exec(`wc -l ${sshGithub} ${sshConfig}`)
 
-  let oldOrigin = rmLineBreaks(exec(`git remote get-url origin`)) // Get https origin
-  let newOrigin = rmLineBreaks(httpsToSsh(oldOrigin)) // Create ssh origin from https origin
+  const oldOrigin = rmLineBreaks(exec('git remote get-url origin')) // Get https origin
+  const newOrigin = rmLineBreaks(httpsToSsh(oldOrigin)) // Create ssh origin from https origin
   exec(`git remote set-url origin ${newOrigin}`) // Set new ssh origin
-  exec(`git remote get-url origin`) // Show new ssh origin
-  exec(`git config --global --list`) // Show global git config
-  exec(`git config --list`) // Show project git config
+  exec('git remote get-url origin') // Show new ssh origin
+  exec('git config --global --list') // Show global git config
+  exec('git config --list') // Show project git config
 
-  let randomNumber = Math.floor(Math.random() * 9876543210) + 1
-  let runDif = `${BRANCH}-${branchHead}-${randomNumber}`
-  let pagesDirectory = `~/publishFolder-${runDif}`
-  let buildCompression = `~/buildFolder-${runDif}.tar.gz`
-  let gitCompression = `~/gitFolder-${runDif}.tar.gz`
+  const randomNumber = Math.floor(Math.random() * 9876543210) + 1
+  const runDif = `${BRANCH}-${branchHead}-${randomNumber}`
+  const pagesDirectory = `~/publishFolder-${runDif}`
+  const buildCompression = `~/buildFolder-${runDif}.tar.gz`
+  const gitCompression = `~/gitFolder-${runDif}.tar.gz`
   exec(`mkdir -p ${pagesDirectory}`) // Create publish folder
   exec(`tar -C ${FOLDER} -czvf ${buildCompression} ./`) // Compressing build folder
   exec(`tar xvzf ${buildCompression} -C ${pagesDirectory}/`) // Uncompress build folder
-  exec(`git stash`) // Remove any change to the folder to allow branch changing
+  exec('git stash') // Remove any change to the folder to allow branch changing
   if (!branchExists(BRANCH)) {
     console.log('Creating new branch')
     exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
@@ -312,7 +322,7 @@ try {
     console.log('Branch already existed')
     exec(`git fetch origin ${BRANCH}`) // Pull branch from remote
     exec(`git checkout ${BRANCH}`) // Change to existing branch if exists
-    exec(`git pull`) // Pull branch from remote
+    exec('git pull') // Pull branch from remote
   }
   exec(`tar -czvf ${gitCompression} .git/`) // Compressing .git folder
   exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
@@ -327,9 +337,9 @@ try {
   exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
 
   const time = (new Date()).toTimeString()
-  core.setOutput('TIMING', time)
+  Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)('TIMING', time)
 } catch (error) {
-  core.setFailed(error.message)
+  Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(error.message)
 }
 
 
@@ -6080,4 +6090,43 @@ exports.checkBypass = checkBypass;
 
 /***/ })
 
-/******/ });
+/******/ },
+/******/ function(__webpack_require__) { // webpackRuntimeModules
+/******/ 	"use strict";
+/******/ 
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	!function() {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = function(exports) {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function getDefault() { return module['default']; } :
+/******/ 				function getModuleExports() { return module; };
+/******/ 			__webpack_require__.d(getter, 'a', getter);
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getter */
+/******/ 	!function() {
+/******/ 		// define getter function for harmony exports
+/******/ 		var hasOwnProperty = Object.prototype.hasOwnProperty;
+/******/ 		__webpack_require__.d = function(exports, name, getter) {
+/******/ 			if(!hasOwnProperty.call(exports, name)) {
+/******/ 				Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ }
+);
