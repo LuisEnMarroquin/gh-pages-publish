@@ -13,11 +13,11 @@ inputs:
     description: 'Folder to move'
     required: true
   SSHKEY:
-    description: 'Your SSH key'
+    description: 'GitHub SSH key'
     required: true
 outputs:
   TIMING:
-    description: 'The time action ended execution'
+    description: 'Time action finished'
 runs:
   using: 'node12'
   main: 'dist/index.js'

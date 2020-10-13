@@ -1,35 +1,35 @@
-const core = require('@actions/core')
-const { execSync } = require('child_process')
-const { context } = require('@actions/github')
+import { setFailed, getInput, setOutput } from '@actions/core'
+import { context } from '@actions/github'
+import { execSync } from 'child_process'
 
 try {
-  let exec = (command, display = true) => {
+  const exec = (command, display = true) => {
     if (display) console.log('exec', command.length, command)
-    let result = execSync(command, { encoding: 'utf-8' })
+    const result = execSync(command, { encoding: 'utf-8' })
     if (display) console.log(result)
     return result
   }
 
-  let rmLineBreaks = (text) => {
+  const rmLineBreaks = (text) => {
     text = text.replace('\r\n', '') // Windows
     text = text.replace('\n', '') // Unix
     return text
   }
 
-  let branchExists = (branch) => {
-    let remoteExists = rmLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
+  const branchExists = (branch) => {
+    const remoteExists = rmLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
     return (remoteExists.length > 0)
   }
 
-  let httpsToSsh = (https) => {
+  const httpsToSsh = (https) => {
     let ssh = https.replace('https://github.com/', 'git@github.com:')
     ssh += '.git'
     return ssh
   }
 
-  let BRANCH = core.getInput('BRANCH')
-  let FOLDER = core.getInput('FOLDER')
-  let SSHKEY = core.getInput('SSHKEY')
+  const BRANCH = getInput('BRANCH')
+  const FOLDER = getInput('FOLDER')
+  const SSHKEY = getInput('SSHKEY')
 
   const branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
   const branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
@@ -49,7 +49,7 @@ try {
 
   exec(`git config --global user.name "${userName}"`)
   exec(`git config --global user.email "${userEmail}"`)
-  exec(`git config --global pull.rebase true`)
+  exec('git config --global pull.rebase true')
 
   const sshFolder = '~/.ssh/' // SSH folder location
   exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
@@ -58,26 +58,26 @@ try {
   exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
   exec(`chmod 600 ${sshGithub}`)
   const sshConfig = '~/.ssh/config' // SSH config file location
-  const configText = `Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n`
+  const configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
   exec(`echo "${configText}" > ${sshConfig}`)
   exec(`wc -l ${sshGithub} ${sshConfig}`)
 
-  let oldOrigin = rmLineBreaks(exec(`git remote get-url origin`)) // Get https origin
-  let newOrigin = rmLineBreaks(httpsToSsh(oldOrigin)) // Create ssh origin from https origin
+  const oldOrigin = rmLineBreaks(exec('git remote get-url origin')) // Get https origin
+  const newOrigin = rmLineBreaks(httpsToSsh(oldOrigin)) // Create ssh origin from https origin
   exec(`git remote set-url origin ${newOrigin}`) // Set new ssh origin
-  exec(`git remote get-url origin`) // Show new ssh origin
-  exec(`git config --global --list`) // Show global git config
-  exec(`git config --list`) // Show project git config
+  exec('git remote get-url origin') // Show new ssh origin
+  exec('git config --global --list') // Show global git config
+  exec('git config --list') // Show project git config
 
-  let randomNumber = Math.floor(Math.random() * 9876543210) + 1
-  let runDif = `${BRANCH}-${branchHead}-${randomNumber}`
-  let pagesDirectory = `~/publishFolder-${runDif}`
-  let buildCompression = `~/buildFolder-${runDif}.tar.gz`
-  let gitCompression = `~/gitFolder-${runDif}.tar.gz`
+  const randomNumber = Math.floor(Math.random() * 9876543210) + 1
+  const runDif = `${BRANCH}-${branchHead}-${randomNumber}`
+  const pagesDirectory = `~/publishFolder-${runDif}`
+  const buildCompression = `~/buildFolder-${runDif}.tar.gz`
+  const gitCompression = `~/gitFolder-${runDif}.tar.gz`
   exec(`mkdir -p ${pagesDirectory}`) // Create publish folder
   exec(`tar -C ${FOLDER} -czvf ${buildCompression} ./`) // Compressing build folder
   exec(`tar xvzf ${buildCompression} -C ${pagesDirectory}/`) // Uncompress build folder
-  exec(`git stash`) // Remove any change to the folder to allow branch changing
+  exec('git stash') // Remove any change to the folder to allow branch changing
   if (!branchExists(BRANCH)) {
     console.log('Creating new branch')
     exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
@@ -85,7 +85,7 @@ try {
     console.log('Branch already existed')
     exec(`git fetch origin ${BRANCH}`) // Pull branch from remote
     exec(`git checkout ${BRANCH}`) // Change to existing branch if exists
-    exec(`git pull`) // Pull branch from remote
+    exec('git pull') // Pull branch from remote
   }
   exec(`tar -czvf ${gitCompression} .git/`) // Compressing .git folder
   exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
@@ -100,7 +100,7 @@ try {
   exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
 
   const time = (new Date()).toTimeString()
-  core.setOutput('TIMING', time)
+  setOutput('TIMING', time)
 } catch (error) {
-  core.setFailed(error.message)
+  setFailed(error.message)
 }

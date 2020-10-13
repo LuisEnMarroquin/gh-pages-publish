@@ -5,7 +5,7 @@
 
 This action sends your build folder to a new/existing branch.
 
-Note: This action only works for `Linux` and `macOS` hosts, this means no `Windows`.
+Note: This action only works for `macOS` and `Ubuntu` hosts, this means no `Windows`.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Note: This action only works for `Linux` and `macOS` hosts, this means no `Windo
 
 ### `SSHKEY`
 
-**Required** Your GitHub SSH access key, this is readed from GitHub Secrets.
+**Required** Your GitHub SSH access key, this comes from GitHub Secrets.
 
 Your repo secrets are at: `https://github.com/<username>/<repository>/settings/secrets`
 
@@ -32,7 +32,7 @@ The time when this action finished execution.
 ## Example usage
 
 ```yml
-name: Deployment
+name: macOS
 
 on:
   push:
@@ -40,12 +40,13 @@ on:
     - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  macos:
+    runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.3
+    - uses: actions/checkout@v1
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.4
       with:
+        BRANCH: gh-pages-mac
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
 ```
@@ -60,7 +61,7 @@ Remember to change the version number first for all files
 npm run build # Update your dist/index.js
 git add . # Add all files
 git commit -m "Use zeit/ncc" # Commit the files
-git tag -a -m "Published v2.3.3" v2.3.3 # Tag your release
+git tag -a -m "Published v2.3.4" v2.3.4 # Tag your release
 git push --follow-tags # Push commit and tags
 ```
 

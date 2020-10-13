@@ -9,10 +9,8 @@ jobs:
   ubuntu:
     runs-on: ubuntu-latest
     steps:
-    - name: Get the repository
-      uses: actions/checkout@v2
-    - name: Deploy to gh-pages
-      uses: LuisEnMarroquin/gh-pages-publish@v2.3.3
+    - uses: actions/checkout@v2
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.4
       id: hello
       with:
         FOLDER: dist

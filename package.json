@@ -10,7 +10,8 @@
     "url": "https://github.com/LuisEnMarroquin/gh-pages-publish.git"
   },
   "scripts": {
-    "build": "ncc build index.js"
+    "build": "ncc build index.js",
+    "lint": "standard index.js --fix"
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
