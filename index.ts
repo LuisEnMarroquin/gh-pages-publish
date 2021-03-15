@@ -3,29 +3,25 @@ import { context } from '@actions/github'
 import { execSync } from 'child_process'
 
 try {
-  const exec = (command, display = true) => {
+  const exec = (command:string, display = true) => {
     if (display) console.log('exec', command.length, command)
-    const result = execSync(command, { encoding: 'utf-8' })
+    const result = execSync(command, { encoding: 'utf-8', timeout: 1000 * 60 })
     if (display) console.log(result)
     return result
   }
 
-  const rmLineBreaks = (text) => {
+  const rmLineBreaks = (text:string) => {
     text = text.replace('\r\n', '') // Windows
     text = text.replace('\n', '') // Unix
     return text
   }
 
-  const branchExists = (branch) => {
+  const branchExists = (branch:string) => {
     const remoteExists = rmLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
     return (remoteExists.length > 0)
   }
 
-  const httpsToSsh = (https) => {
-    let ssh = https.replace('https://github.com/', 'git@github.com:')
-    ssh += '.git'
-    return ssh
-  }
+  const httpsToSsh = (https:string) => https.replace('https://github.com/', 'git@github.com:') + '.git'
 
   const BRANCH = getInput('BRANCH')
   const FOLDER = getInput('FOLDER')
@@ -35,16 +31,15 @@ try {
   const branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
 
   const commitMessage = `Deploy to ${BRANCH} from ${branchName} @ ${branchHead} 🚀`
-  const payload = context.payload
   let userName = 'LuisEnMarroquin'
   let userEmail = 'mluis651@gmail.com'
   try {
-    userName = payload.pusher ? (payload.pusher.name || userName) : userName
-    userEmail = payload.pusher ? (payload.pusher.email || userEmail) : userEmail
+    userName = context.payload.pusher ? (context.payload.pusher.name || userName) : userName
+    userEmail = context.payload.pusher ? (context.payload.pusher.email || userEmail) : userEmail
   } catch (error) {
     console.error('Payload error', { error })
-    const payloadString = JSON.stringify(payload, undefined, 2) // Get the JSON webhook payload for the event that triggered the workflow
-    console.log(`The event payload is: ${payloadString}`)
+    const payloadString = JSON.stringify(context.payload, undefined, 2) // Get JSON info from the event that triggered the workflow
+    console.log(`The event was ${payloadString}`)
   }
 
   exec(`git config --global user.name "${userName}"`)
@@ -66,10 +61,8 @@ try {
   const newOrigin = rmLineBreaks(httpsToSsh(oldOrigin)) // Create ssh origin from https origin
   exec(`git remote set-url origin ${newOrigin}`) // Set new ssh origin
   exec('git remote get-url origin') // Show new ssh origin
-  exec('git config --global --list') // Show global git config
-  exec('git config --list') // Show project git config
 
-  const randomNumber = Math.floor(Math.random() * 9876543210) + 1
+  const randomNumber = Math.ceil(Math.random() * 9876543210)
   const runDif = `${BRANCH}-${branchHead}-${randomNumber}`
   const pagesDirectory = `~/publishFolder-${runDif}`
   const buildCompression = `~/buildFolder-${runDif}.tar.gz`
@@ -82,7 +75,7 @@ try {
     console.log('Creating new branch')
     exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
   } else {
-    console.log('Branch already existed')
+    console.log('Branch already exists')
     exec(`git fetch origin ${BRANCH}`) // Pull branch from remote
     exec(`git checkout ${BRANCH}`) // Change to existing branch if exists
     exec('git pull') // Pull branch from remote

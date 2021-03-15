@@ -9,18 +9,9 @@ desktop.ini
 # Test files
 /nothing.*
 
-# SSH folder
-.ssh/
-config
-github
-.gitconfig
-
-# Compressed
-*.gz
-
-# Other package managers
+# Package managers
 yarn.lock
 npm-shrinkwrap.json
 
-# Misc
+# VS Code errors
 *.log*

@@ -6,11 +6,11 @@ on:
     - main
 
 jobs:
-  deploy:
+  test:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v1
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.4
+    - uses: actions/checkout@v2
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.5
       with:
         BRANCH: gh-pages-mac
         FOLDER: dist

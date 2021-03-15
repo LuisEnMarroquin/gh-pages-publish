@@ -1,7 +1,7 @@
 # GitHub Pages Publish GitHub Action
 
-![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/macOS/badge.svg)
-![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/workflows/Ubuntu/badge.svg)
+![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/actions/workflows/macos.yml/badge.svg)
+![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/actions/workflows/ubuntu.yml/badge.svg)
 
 This action sends your build folder to a new/existing branch.
 
@@ -44,7 +44,7 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.4
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.5
       with:
         BRANCH: gh-pages-mac
         FOLDER: dist
@@ -61,12 +61,8 @@ Remember to change the version number first for all files
 npm run build # Update your dist/index.js
 git add . # Add all files
 git commit -m "Use zeit/ncc" # Commit the files
-git tag -a -m "Published v2.3.4" v2.3.4 # Tag your release
+git tag -a -m "Published v2.3.5" v2.3.5 # Tag your release
 git push --follow-tags # Push commit and tags
 ```
 
 -->
-
-## References
-
-* [Inspired by JamesIves action](https://github.com/JamesIves/github-pages-deploy-action)
