@@ -7,19 +7,10 @@ try {
     if (display) console.log('exec', command.length, command)
     const result = execSync(command, { encoding: 'utf-8', timeout: 1000 * 60 })
     if (display) console.log(result)
-    return result
+    return result.replace(/(?:\r\n|\r|\n)/g, '')
   }
 
-  const rmLineBreaks = (text:string) => {
-    text = text.replace('\r\n', '') // Windows
-    text = text.replace('\n', '') // Unix
-    return text
-  }
-
-  const branchExists = (branch:string) => {
-    const remoteExists = rmLineBreaks(exec(`git ls-remote --heads origin ${branch}`))
-    return (remoteExists.length > 0)
-  }
+  const branchExists = (branch:string) => exec(`git ls-remote --heads origin ${branch}`).length > 0 ? true : false
 
   const httpsToSsh = (https:string) => https.replace('https://github.com/', 'git@github.com:') + '.git'
 
@@ -27,8 +18,8 @@ try {
   const FOLDER = getInput('FOLDER')
   const SSHKEY = getInput('SSHKEY')
 
-  const branchName = rmLineBreaks(exec('git rev-parse --abbrev-ref HEAD')) // Get branch name from git
-  const branchHead = rmLineBreaks(exec('git show --format="%h" --no-patch')) // Get branch name from git
+  const branchName = exec('git rev-parse --abbrev-ref HEAD') // Get branch name from git
+  const branchHead = exec('git show --format="%h" --no-patch') // Get branch name from git
 
   const commitMessage = `Deploy to ${BRANCH} from ${branchName} @ ${branchHead} 🚀`
   let userName = 'LuisEnMarroquin'
@@ -37,9 +28,8 @@ try {
     userName = context.payload.pusher ? (context.payload.pusher.name || userName) : userName
     userEmail = context.payload.pusher ? (context.payload.pusher.email || userEmail) : userEmail
   } catch (error) {
-    console.error('Payload error', { error })
-    const payloadString = JSON.stringify(context.payload, undefined, 2) // Get JSON info from the event that triggered the workflow
-    console.log(`The event was ${payloadString}`)
+    console.error('Payload errors', { error })
+    console.error('Payload string', JSON.stringify(context.payload, undefined, 2))
   }
 
   exec(`git config --global user.name "${userName}"`)
@@ -47,18 +37,18 @@ try {
   exec('git config --global pull.rebase true')
 
   const sshFolder = '~/.ssh/' // SSH folder location
-  exec(`mkdir -p ${sshFolder}`) // Create SSH folder if doesn't exists
+  exec(`mkdir -p ${sshFolder}`) // Create SSH folder if it doesn't exists
   exec(`chmod 755 ${sshFolder}`)
   const sshGithub = '~/.ssh/github' // SSH key file location
   exec(`echo "${SSHKEY}" > ${sshGithub}`, false)
   exec(`chmod 600 ${sshGithub}`)
   const sshConfig = '~/.ssh/config' // SSH config file location
-  const configText = 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/github\n  StrictHostKeyChecking no\n'
+  const configText = `Host github.com\n  HostName github.com\n  IdentityFile ${sshGithub}\n  StrictHostKeyChecking no\n`
   exec(`echo "${configText}" > ${sshConfig}`)
   exec(`wc -l ${sshGithub} ${sshConfig}`)
 
-  const oldOrigin = rmLineBreaks(exec('git remote get-url origin')) // Get https origin
-  const newOrigin = rmLineBreaks(httpsToSsh(oldOrigin)) // Create ssh origin from https origin
+  const oldOrigin = exec('git remote get-url origin') // Get https origin
+  const newOrigin = httpsToSsh(oldOrigin) // Create ssh origin from https origin
   exec(`git remote set-url origin ${newOrigin}`) // Set new ssh origin
   exec('git remote get-url origin') // Show new ssh origin
 
@@ -92,8 +82,7 @@ try {
   exec(`cd ${pagesDirectory} && git push -f --set-upstream origin ${BRANCH}`)
   exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
 
-  const time = (new Date()).toTimeString()
-  setOutput('TIMING', time)
+  setOutput('TIMING', (new Date()).toTimeString())
 } catch (error) {
   setFailed(error.message)
 }

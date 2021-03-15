@@ -1,7 +1,6 @@
-# GitHub Pages Publish GitHub Action
+# GitHub Pages Publish - GitHub Action
 
-![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/actions/workflows/macos.yml/badge.svg)
-![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/actions/workflows/ubuntu.yml/badge.svg)
+![GitHub](https://github.com/LuisEnMarroquin/gh-pages-publish/actions/workflows/deploy.yml/badge.svg)
 
 This action sends your build folder to a new/existing branch.
 
@@ -32,7 +31,7 @@ The time when this action finished execution.
 ## Example usage
 
 ```yml
-name: macOS
+name: Testing
 
 on:
   push:
@@ -40,13 +39,12 @@ on:
     - main
 
 jobs:
-  deploy:
-    runs-on: macos-latest
+  ubuntu:
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.5
+    - uses: actions/checkout@v2
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.6
       with:
-        BRANCH: gh-pages-mac
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
 ```
@@ -61,7 +59,7 @@ Remember to change the version number first for all files
 npm run build # Update your dist/index.js
 git add . # Add all files
 git commit -m "Use zeit/ncc" # Commit the files
-git tag -a -m "Published v2.3.5" v2.3.5 # Tag your release
+git tag -a -m "Published v2.3.6" v2.3.6 # Tag your release
 git push --follow-tags # Push commit and tags
 ```
 

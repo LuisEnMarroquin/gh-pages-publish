@@ -1,6 +1,6 @@
 {
   "name": "publish-gh-pages",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "description": "Publish to GitHub Pages using your SSH key",
   "main": "index.js",
   "license": "GPL-3.0",
@@ -10,8 +10,7 @@
     "url": "https://github.com/LuisEnMarroquin/gh-pages-publish.git"
   },
   "scripts": {
-    "build": "ncc build index.ts -o dist --minify",
-    "lint": "standard --fix"
+    "build": "ncc build index.ts -o dist --minify"
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
@@ -21,10 +20,5 @@
     "@types/node": "^14.14.34",
     "@vercel/ncc": "^0.27.0",
     "typescript": "^4.2.3"
-  },
-  "standard": {
-    "ignore": [
-      "dist/*.js"
-    ]
   }
 }
