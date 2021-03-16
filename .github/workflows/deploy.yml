@@ -37,5 +37,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: gh auth login --help
-    - run: gh auth status
-    - run: gh release create --help
+    - run: gh auth status || true
+    - run: gh config set git_protocol ssh
