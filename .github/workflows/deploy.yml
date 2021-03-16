@@ -37,5 +37,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: gh auth login --help
-    - run: gh issue list
+    - run: gh auth status
     - run: gh release create --help
