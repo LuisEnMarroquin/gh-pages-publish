@@ -1,13 +1,15 @@
 # GitHub Pages Publish - GitHub Action
 
-[![Fail](https://github.com/LuisEnMarroquin/gh-pages-publish/actions/workflows/deploy.yml/badge.svg)](https://github.com/LuisEnMarroquin)
+[![Fail](https://github.com/LuisEnMarroquin/gh-pages-publish/actions/workflows/windows.yml/badge.svg)](https://github.com/LuisEnMarroquin)
+[![Fail](https://github.com/LuisEnMarroquin/gh-pages-publish/actions/workflows/macos.yml/badge.svg)](https://github.com/LuisEnMarroquin)
+[![Fail](https://github.com/LuisEnMarroquin/gh-pages-publish/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/LuisEnMarroquin)
 
 This action sends your project build folder to a new/existing branch
 
 ## Example usage
 
 ```yml
-name: Testing
+name: Ubuntu
 
 on:
   push:
@@ -15,7 +17,7 @@ on:
     - main
 
 jobs:
-  ubuntu:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
