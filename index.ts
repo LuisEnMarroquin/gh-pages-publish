@@ -12,8 +12,6 @@ try {
 
   const branchExists = (branch: string) => exec(`git ls-remote --heads origin ${branch}`).length > 0 ? true : false
 
-  const httpsToSsh = (https: string) => https.replace('https://github.com/', 'git@github.com:') + '.git'
-
   const BRANCH = getInput('BRANCH')
   const FOLDER = getInput('FOLDER')
   const SSHKEY = getInput('SSHKEY')
@@ -33,7 +31,6 @@ try {
 
   exec(`git config --global user.name "${userName}"`)
   exec(`git config --global user.email "${userEmail}"`)
-  exec('git config --global pull.rebase true')
 
   const sshFolder = '~/.ssh/', sshGithub = '~/.ssh/github'
   exec(`mkdir -p ${sshFolder} && chmod 755 ${sshFolder}`)
@@ -41,28 +38,22 @@ try {
   exec(`echo "Host github.com\n  HostName github.com\n  IdentityFile ${sshGithub}\n  StrictHostKeyChecking no\n" > ~/.ssh/config`)
 
   const oldOrigin = exec('git remote get-url origin') // Get https origin
-  const newOrigin = httpsToSsh(oldOrigin) // Create ssh origin from https origin
+  const newOrigin = oldOrigin.replace('https://github.com/', 'git@github.com:') + '.git' // Create ssh origin from https origin
   exec(`git remote set-url origin ${newOrigin}`) // Set new ssh origin
-  exec('git remote get-url origin') // Show new ssh origin
 
-  const randomNumber = Math.ceil(Math.random() * 9876543210)
-  const runDif = `${BRANCH}-${branchHead}-${randomNumber}`
+  const runDif = `${BRANCH}-${branchHead}-${Math.ceil(Math.random() * 9876543210)}`
   const pagesDirectory = `~/publishFolder-${runDif}`
-  const buildCompression = `~/buildFolder-${runDif}.tar.gz`
-  const gitCompression = `~/gitFolder-${runDif}.tar.gz`
   exec(`mkdir -p ${pagesDirectory}`) // Create publish folder
-  exec(`tar -C ${FOLDER} -czvf ${buildCompression} ./`) // Compressing build folder
-  exec(`tar xvzf ${buildCompression} -C ${pagesDirectory}/`) // Uncompress build folder
+  exec(`cp -R ${FOLDER}/ ${pagesDirectory}/`) // Copy build folder
   exec('git stash') // Remove any change to the folder to allow branch changing
   if (!branchExists(BRANCH)) { // Creating new branch
     exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
   } else { // Branch already exists
     exec(`git fetch origin ${BRANCH}`) // Pull branch from remote
-    exec(`git checkout ${BRANCH}`) // Change to existing branch if exists
-    exec('git pull') // Pull branch from remote
+    exec(`git checkout ${BRANCH}`) // Change to existing branch
+    exec('git pull') // Pull changes from remote
   }
-  exec(`tar -czvf ${gitCompression} .git/`) // Compressing .git folder
-  exec(`tar xvzf ${gitCompression} -C ${pagesDirectory}/`) // Uncompress .git folder
+  exec(`cp -R .git/ ${pagesDirectory}/`) // Copy .git folder
   exec(`ls -aR ${pagesDirectory}`) // List files in folder to publish
   exec(`cd ${pagesDirectory} && git config user.name ${userName}`)
   exec(`cd ${pagesDirectory} && git config user.email ${userEmail}`)
@@ -71,7 +62,7 @@ try {
   exec(`cd ${pagesDirectory} && git add . --verbose`)
   exec(`cd ${pagesDirectory} && git commit --allow-empty -m "${cmtMessage}" --verbose`)
   exec(`cd ${pagesDirectory} && git push -f --set-upstream origin ${BRANCH}`)
-  exec(`rm -rf ${gitCompression} ${buildCompression} ${pagesDirectory}`)
+  exec(`rm -rf ${pagesDirectory}`)
 
   setOutput('TIMING', (new Date()).toTimeString())
 } catch (error) {
