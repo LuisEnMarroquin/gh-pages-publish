@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.1
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.2
       with:
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}

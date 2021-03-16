@@ -3,9 +3,11 @@ import { context } from '@actions/github'
 import { execSync } from 'child_process'
 
 try {
+  const isWin = process.platform === 'win32' ? true : false
+
   const exec = (command: string, display = true) => {
     if (display) console.log('exec', command.length, command)
-    const result = execSync(command, { encoding: 'utf-8', shell: '/bin/sh', timeout: 1000 * 60 })
+    const result = execSync(command, { encoding: 'utf-8', shell: isWin ? 'sh.exe' : '/bin/sh', timeout: 60000 })
     if (display) console.log(result)
     return result.replace(/(?:\r\n|\r|\n)/g, '')
   }
@@ -43,9 +45,8 @@ try {
   exec(`git remote set-url origin ${newOrigin}`) // Set new ssh origin
 
   const pagesDir = `~/publishFolder-${BRANCH}-${branchHead}`
-  exec(`mkdir -p ${pagesDir}`) // Create publish folder
-  exec(`cp -aR ${FOLDER}/. ${pagesDir}`) // Copy build folder
-  exec('git stash') // Remove any change to the folder to allow branch changing
+  exec(`mkdir -p ${pagesDir} && cp -aR ${FOLDER}/. ${pagesDir}`) // Copy build files to publish folder
+  exec('git stash') // Remove any change to the folder to allow branch change
   if (!branchExists(BRANCH)) exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
   else exec(`git fetch origin ${BRANCH} && git checkout ${BRANCH}`) // Change to existing branch
 
