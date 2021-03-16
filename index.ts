@@ -5,7 +5,7 @@ import { execSync } from 'child_process'
 try {
   const exec = (command: string, display = true) => {
     if (display) console.log('exec', command.length, command)
-    const result = execSync(command, { encoding: 'utf-8', timeout: 1000 * 60 })
+    const result = execSync(command, { encoding: 'utf-8', shell: '/bin/sh', timeout: 1000 * 60 })
     if (display) console.log(result)
     return result.replace(/(?:\r\n|\r|\n)/g, '')
   }
@@ -31,6 +31,7 @@ try {
 
   exec(`git config --global user.name "${userName}"`)
   exec(`git config --global user.email "${userEmail}"`)
+  exec('git config --global pull.rebase true')
 
   const sshFolder = '~/.ssh/', sshGithub = '~/.ssh/github'
   exec(`mkdir -p ${sshFolder} && chmod 755 ${sshFolder}`)
@@ -41,28 +42,23 @@ try {
   const newOrigin = oldOrigin.replace('https://github.com/', 'git@github.com:') + '.git' // Create ssh origin from https origin
   exec(`git remote set-url origin ${newOrigin}`) // Set new ssh origin
 
-  const runDif = `${BRANCH}-${branchHead}-${Math.ceil(Math.random() * 9876543210)}`
-  const pagesDirectory = `~/publishFolder-${runDif}`
-  exec(`mkdir -p ${pagesDirectory}`) // Create publish folder
-  exec(`cp -aR ${FOLDER}/. ${pagesDirectory}`) // Copy build folder
+  const pagesDir = `~/publishFolder-${BRANCH}-${branchHead}`
+  exec(`mkdir -p ${pagesDir}`) // Create publish folder
+  exec(`cp -aR ${FOLDER}/. ${pagesDir}`) // Copy build folder
   exec('git stash') // Remove any change to the folder to allow branch changing
-  if (!branchExists(BRANCH)) { // Creating new branch
-    exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
-  } else { // Branch already exists
-    exec(`git fetch origin ${BRANCH}`) // Pull branch from remote
-    exec(`git checkout ${BRANCH}`) // Change to existing branch
-    exec('git pull') // Pull changes from remote
-  }
-  exec(`cp -aR .git/. ${pagesDirectory}/.git`) // Copy .git folder
-  exec(`ls -aR ${pagesDirectory}`) // List files in folder to publish
-  exec(`cd ${pagesDirectory} && git config user.name ${userName}`)
-  exec(`cd ${pagesDirectory} && git config user.email ${userEmail}`)
-  exec(`cd ${pagesDirectory} && git rm -r --cached . -f`)
-  exec(`cd ${pagesDirectory} && git status`)
-  exec(`cd ${pagesDirectory} && git add . --verbose`)
-  exec(`cd ${pagesDirectory} && git commit --allow-empty -m "${cmtMessage}" --verbose`)
-  exec(`cd ${pagesDirectory} && git push -f --set-upstream origin ${BRANCH}`)
-  exec(`rm -rf ${pagesDirectory}`)
+  if (!branchExists(BRANCH)) exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
+  else exec(`git fetch origin ${BRANCH} && git checkout ${BRANCH}`) // Change to existing branch
+
+  exec(`cp -aR .git/. ${pagesDir}/.git`) // Copy .git folder
+  exec(`ls -aR ${pagesDir}`) // List files in folder to publish
+  exec(`cd ${pagesDir} && git config user.name ${userName}`)
+  exec(`cd ${pagesDir} && git config user.email ${userEmail}`)
+  exec(`cd ${pagesDir} && git rm -r --cached . -f`)
+  exec(`cd ${pagesDir} && git status`)
+  exec(`cd ${pagesDir} && git add . --verbose`)
+  exec(`cd ${pagesDir} && git commit --allow-empty -m "${cmtMessage}" --verbose`)
+  exec(`cd ${pagesDir} && git push -f --set-upstream origin ${BRANCH}`)
+  exec(`rm -rf ${pagesDir}`)
 
   setOutput('TIMING', (new Date()).toTimeString())
 } catch (error) {
