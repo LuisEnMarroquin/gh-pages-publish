@@ -10,25 +10,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.2
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.3
       with:
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
-  macos:
+  mac:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.2
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.3
       with:
         BRANCH: gh-pages-mac
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
-  windows:
+  win:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.2
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.3
       with:
         BRANCH: gh-pages-win
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
+  github:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: gh auth login --help
+    - uses: gh issue list
+    - uses: gh release create --help

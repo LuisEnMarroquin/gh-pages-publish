@@ -51,7 +51,7 @@ try {
   else exec(`git fetch origin ${BRANCH} && git checkout ${BRANCH}`) // Change to existing branch
 
   exec(`cp -aR .git/. ${pagesDir}/.git`) // Copy .git folder
-  exec(`ls -aR ${pagesDir}`) // List files in folder to publish
+  exec(`ls -a ${pagesDir}`) // List files in folder to publish
   exec(`cd ${pagesDir} && git config user.name ${userName}`)
   exec(`cd ${pagesDir} && git config user.email ${userEmail}`)
   exec(`cd ${pagesDir} && git rm -r --cached . -f`)
