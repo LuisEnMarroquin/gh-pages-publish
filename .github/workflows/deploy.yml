@@ -36,6 +36,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: gh auth --help
-    - uses: gh issue list
-    - uses: gh release create --help
+    - run: gh auth login --help
+    - run: gh issue list
+    - run: gh release create --help
