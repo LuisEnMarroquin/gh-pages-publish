@@ -14,10 +14,3 @@ jobs:
       with:
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
-  github:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - run: gh auth login --help
-    - run: gh auth status || true
-    - run: gh config set git_protocol ssh
