@@ -44,7 +44,7 @@ try {
   const runDif = `${BRANCH}-${branchHead}-${Math.ceil(Math.random() * 9876543210)}`
   const pagesDirectory = `~/publishFolder-${runDif}`
   exec(`mkdir -p ${pagesDirectory}`) // Create publish folder
-  exec(`cp -R ${FOLDER}/ ${pagesDirectory}/`) // Copy build folder
+  exec(`cp -aR ${FOLDER}/. ${pagesDirectory}`) // Copy build folder
   exec('git stash') // Remove any change to the folder to allow branch changing
   if (!branchExists(BRANCH)) { // Creating new branch
     exec(`git checkout --orphan ${BRANCH}`) // Create branch if doesn't exist
@@ -53,7 +53,7 @@ try {
     exec(`git checkout ${BRANCH}`) // Change to existing branch
     exec('git pull') // Pull changes from remote
   }
-  exec(`cp -R .git/ ${pagesDirectory}/`) // Copy .git folder
+  exec(`cp -aR .git/. ${pagesDirectory}/.git`) // Copy .git folder
   exec(`ls -aR ${pagesDirectory}`) // List files in folder to publish
   exec(`cd ${pagesDirectory} && git config user.name ${userName}`)
   exec(`cd ${pagesDirectory} && git config user.email ${userEmail}`)
