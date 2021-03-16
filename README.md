@@ -43,24 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.7
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.3.8
       with:
         FOLDER: dist
         SSHKEY: ${{ secrets.SSH }}
 ```
-
-<!--
-
-## Publish action
-
-Remember to change the version number first for all files
-
-```shell
-npm run build # Update your dist/index.js
-git add . # Add all files
-git commit -m "Use zeit/ncc" # Commit the files
-git tag -a -m "Published v2.3.7" v2.3.7 # Tag your release
-git push --follow-tags # Push commit and tags
-```
-
--->

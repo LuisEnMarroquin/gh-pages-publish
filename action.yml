@@ -19,5 +19,5 @@ outputs:
   TIMING:
     description: 'Time action finished'
 runs:
-  using: 'node14'
+  using: 'node12'
   main: 'dist/index.js'
