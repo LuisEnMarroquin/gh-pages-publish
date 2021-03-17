@@ -2,8 +2,8 @@ name: 'GitHub Pages Publish'
 description: 'Publish to GitHub Pages using an SSH key'
 author: 'LuisEnMarroquin'
 branding:
-  color: 'blue'
-  icon: 'droplet'
+  color: 'red'
+  icon: 'fast-forward'
 inputs:
   BRANCH:
     description: 'Branch to move'

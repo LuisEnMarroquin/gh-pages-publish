@@ -10,7 +10,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.3
+    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.4
       with:
         BRANCH: gh-pages-win
         FOLDER: dist
