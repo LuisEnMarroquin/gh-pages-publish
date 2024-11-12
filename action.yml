@@ -1,23 +1,23 @@
-name: 'GitHub Pages Publish'
-description: 'Publish to GitHub Pages using an SSH key'
-author: 'LuisEnMarroquin'
+name: "GitHub Pages Publish"
+description: "Publish to GitHub Pages using an SSH key"
+author: "LuisEnMarroquin"
 branding:
-  color: 'red'
-  icon: 'fast-forward'
+  color: "red"
+  icon: "fast-forward"
 inputs:
   BRANCH:
-    description: 'Branch to move'
-    default: 'gh-pages'
+    description: "Branch to move"
+    default: "gh-pages"
     required: false
   FOLDER:
-    description: 'Folder to move'
+    description: "Folder to move"
     required: true
   SSHKEY:
-    description: 'GitHub SSH key'
+    description: "GitHub SSH key"
     required: true
 outputs:
   TIMING:
-    description: 'Time action finished'
+    description: "Time action finished"
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "node20"
+  main: "dist/index.js"

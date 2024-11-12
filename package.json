@@ -1,6 +1,6 @@
 {
   "name": "gh-pages-publish",
-  "version": "2.4.5",
+  "version": "2.4.6",
   "description": "Publish to GitHub Pages using an SSH key",
   "license": "GPL-3.0",
   "author": "LuisEnMarroquin <luis@marroquin.dev>",
