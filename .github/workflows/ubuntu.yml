@@ -3,14 +3,14 @@ name: Ubuntu
 on:
   push:
     branches:
-    - main
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: LuisEnMarroquin/gh-pages-publish@v2.4.4
-      with:
-        FOLDER: dist
-        SSHKEY: ${{ secrets.SSH }}
+      - uses: actions/checkout@v2
+      - uses: LuisEnMarroquin/gh-pages-publish@v2.4.5
+        with:
+          FOLDER: dist
+          SSHKEY: ${{ secrets.SSH }}
